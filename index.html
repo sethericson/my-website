@@ -447,7 +447,7 @@
   .profile-grid {
     position: relative; z-index: 1;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 0;
     margin-top: 16px;
   }
@@ -460,12 +460,16 @@
   .profile-cell {
     padding: 16px 18px;
     border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
     display: flex; flex-direction: column; gap: 4px;
   }
-  .profile-cell:last-child { border-right: none; }
+  /* 4 columns × 2 rows: no right border on cells 4 & 8; no bottom border on cells 5-8 */
+  .profile-cell:nth-child(4n) { border-right: none; }
+  .profile-cell:nth-child(n+5) { border-bottom: none; }
   @media (max-width: 900px) {
     .profile-cell { border-right: none; border-bottom: 1px solid var(--line); }
     .profile-cell:nth-child(odd) { border-right: 1px solid var(--line); }
+    .profile-cell:nth-child(4n) { border-right: 1px solid var(--line); }
     .profile-cell:last-child, .profile-cell:nth-last-child(2) { border-bottom: none; }
   }
   @media (max-width: 480px) {
@@ -1052,7 +1056,6 @@
     </div>
     <div class="profile-grid">
       <div class="profile-cell"><span class="k">Name</span><span class="v">Seth Ericson</span></div>
-      <div class="profile-cell"><span class="k">Jersey</span><span class="v">#16</span></div>
       <div class="profile-cell"><span class="k">Grad Year</span><span class="v">2031</span></div>
       <div class="profile-cell"><span class="k">Primary</span><span class="v">1B</span></div>
       <div class="profile-cell"><span class="k">Secondary</span><span class="v">OF · LHP</span></div>
