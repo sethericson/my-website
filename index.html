@@ -79,6 +79,24 @@
     transition: color 200ms var(--ease);
   }
   .nav-links a:hover { color: var(--ink-0); }
+  .nav-links a.has-new {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .nav-links .new-pill {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    font-weight: 700; font-family: 'JetBrains Mono', monospace;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--c-hero), var(--c-acad));
+    color: #fff;
+    box-shadow: 0 0 10px rgba(94, 139, 255, 0.5);
+    animation: navpulse 2.4s ease-in-out infinite;
+  }
+  @keyframes navpulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.78; transform: scale(0.95); }
+  }
   @media (max-width: 680px) {
     .nav-inner { padding: 11px 18px; }
     .nav-links { gap: 16px; }
@@ -933,6 +951,7 @@
       <a href="#stats">Stats</a>
       <a href="#academics" class="hide-sm">Academics</a>
       <a href="#teams">Teams</a>
+      <a href="https://sethericson.com/vault" target="_blank" rel="noopener" class="has-new">Vault<span class="new-pill">New</span></a>
     </div>
   </div>
 </nav>
@@ -1063,12 +1082,12 @@
       <div class="stat-card reveal">
         <div class="stat-label">Batting Average</div>
         <div class="stat-sublabel">Hits per at-bat</div>
-        <div class="stat-value">.400</div>
+        <div class="stat-value">.414</div>
       </div>
       <div class="stat-card reveal">
         <div class="stat-label">At-Bats</div>
         <div class="stat-sublabel">Sample size</div>
-        <div class="stat-value">25</div>
+        <div class="stat-value">29</div>
       </div>
       <div class="stat-card reveal">
         <div class="stat-label">On-Base %</div>
