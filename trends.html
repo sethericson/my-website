@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Seth Ericson — Statistical Trends | Performance over time" />
+<title>Stat Trends — Seth Ericson</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%238A1538'/><text x='50%25' y='50%25' dy='0.34em' text-anchor='middle' font-family='Inter, system-ui, sans-serif' font-weight='700' font-size='30' letter-spacing='-1.5' fill='%23ffffff'>SE</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg-0: #000000;
+    --bg-1: #0a0a0c;
+    --ink-0: #ffffff;
+    --ink-1: #f5f5f7;
+    --ink-2: #a1a1a6;
+    --ink-3: #6e6e73;
+    --ink-4: #3a3a3c;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.14);
+
+    --c-hero:     #5e8bff;
+    --c-acad:     #8b5cf6;
+    --c-teams:    #2dd4bf;
+    --c-sched:    #f472b6;
+
+    --c-ba:       #5e8bff;   /* blue */
+    --c-ab:       #ff9f4a;   /* amber */
+    --c-obp:      #2dd4bf;   /* teal */
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-0);
+    color: var(--ink-1);
+    line-height: 1.47;
+    font-feature-settings: "ss01", "cv11";
+    overflow-x: hidden;
+    letter-spacing: -0.003em;
+    min-height: 100vh;
+  }
+  ::selection { background: var(--c-hero); color: #fff; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    backdrop-filter: saturate(180%) blur(22px);
+    -webkit-backdrop-filter: saturate(180%) blur(22px);
+    background: rgba(0, 0, 0, 0.62);
+    border-bottom: 1px solid var(--line);
+    transition: transform 300ms var(--ease);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto;
+    padding: 13px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand {
+    font-weight: 600; letter-spacing: -0.01em; font-size: 14px;
+    color: var(--ink-1); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--ink-2); text-decoration: none; font-size: 13px; font-weight: 400;
+    transition: color 200ms var(--ease);
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--ink-0); }
+  @media (max-width: 680px) {
+    .nav-inner { padding: 11px 18px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 12.5px; }
+  }
+
+  /* ---------- Hero ---------- */
+  .trends-hero {
+    position: relative;
+    padding: 140px 28px 60px;
+    overflow: hidden;
+    background: #000;
+  }
+  .trends-hero-bg {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 900px 500px at 30% 0%, rgba(94, 139, 255, 0.20), transparent 55%),
+      radial-gradient(ellipse 700px 500px at 80% 100%, rgba(45, 212, 191, 0.15), transparent 60%),
+      radial-gradient(ellipse 600px 400px at 50% 50%, rgba(255, 159, 74, 0.07), transparent 60%),
+      linear-gradient(180deg, #000 0%, #07070a 100%);
+  }
+  .trends-hero::after {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1px, transparent 0);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 0%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 0%, transparent 80%);
+    opacity: 0.5;
+  }
+  .trends-hero-inner {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    text-align: center;
+  }
+  .trends-kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 7px 14px 7px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(10px);
+    font-size: 12.5px; font-weight: 500;
+    color: var(--ink-1);
+    margin-bottom: 28px;
+  }
+  .trends-kicker .grad-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--c-ba), var(--c-obp));
+    box-shadow: 0 0 10px rgba(94, 139, 255, 0.6);
+  }
+  .trends-kicker .div { width: 1px; height: 12px; background: var(--line-strong); }
+  .trends-kicker .muted { color: var(--ink-3); }
+
+  .trends-title {
+    font-size: clamp(48px, 9vw, 110px);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 0.96;
+    color: var(--ink-0);
+    margin-bottom: 22px;
+    background: linear-gradient(180deg, #ffffff 0%, #c7cad1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .trends-sub {
+    font-size: clamp(15px, 1.5vw, 18px);
+    color: var(--ink-2);
+    font-weight: 400;
+    max-width: 700px;
+    margin: 0 auto;
+    letter-spacing: -0.01em;
+    line-height: 1.55;
+  }
+
+  /* ---------- Chart section ---------- */
+  .chart-section {
+    padding: 60px 28px 100px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #07070a 0%, #000 100%);
+  }
+  .chart-section .glow-1 {
+    position: absolute;
+    top: -100px; left: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.3;
+    background: radial-gradient(circle, rgba(94, 139, 255, 0.22), transparent 70%);
+    pointer-events: none;
+  }
+  .chart-section .glow-2 {
+    position: absolute;
+    bottom: -100px; right: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.3;
+    background: radial-gradient(circle, rgba(45, 212, 191, 0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .chart-container {
+    position: relative; z-index: 1;
+    max-width: 1080px; margin: 0 auto;
+  }
+
+  /* Legend cards */
+  .stat-legend {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 720px) {
+    .stat-legend { grid-template-columns: 1fr; }
+  }
+  .legend-card {
+    position: relative;
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    overflow: hidden;
+    transition: transform 250ms var(--ease), border-color 250ms var(--ease);
+  }
+  .legend-card:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+  .legend-card .top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .legend-dot {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-2); letter-spacing: -0.005em;
+  }
+  .legend-dot::before {
+    content: '';
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--c, var(--c-hero));
+    box-shadow: 0 0 8px var(--c, var(--c-hero));
+  }
+  .legend-card .current-val {
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.035em; color: var(--ink-0);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .chart-card {
+    position: relative;
+    background: linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 28px;
+    overflow: hidden;
+  }
+  .chart-card::before {
+    content: ''; position: absolute; top: -100px; right: -100px;
+    width: 280px; height: 280px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(94, 139, 255, 0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .chart-wrap {
+    position: relative; z-index: 1;
+    height: 460px;
+  }
+  @media (max-width: 720px) {
+    .chart-card { padding: 18px; }
+    .chart-wrap { height: 380px; }
+  }
+
+  /* Insight note */
+  .insight-note {
+    margin-top: 22px;
+    padding: 14px 18px;
+    background: rgba(94, 139, 255, 0.04);
+    border: 1px solid rgba(94, 139, 255, 0.15);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--ink-2);
+    display: flex; align-items: center; gap: 10px;
+    line-height: 1.55;
+  }
+  .insight-note svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--c-hero); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 52px 28px 44px;
+    background: #000;
+    border-top: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  footer::before {
+    content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+    width: 60%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-hero), var(--c-acad), var(--c-teams), var(--c-sched), transparent);
+    opacity: 0.6;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 20px;
+    position: relative; z-index: 1;
+  }
+  .footer-contact a {
+    color: var(--ink-2); text-decoration: none; font-size: 13.5px; font-weight: 400;
+    transition: color 200ms var(--ease);
+  }
+  .footer-contact a:hover { color: var(--ink-0); }
+  .footer-copy {
+    color: var(--ink-3); font-size: 12px;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 700ms var(--ease), transform 700ms var(--ease);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    * { animation: none !important; }
+  }
+
+  @media (max-width: 680px) {
+    .trends-hero { padding: 110px 20px 40px; }
+    .chart-section { padding: 40px 20px 70px; }
+    footer { padding: 40px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html">Seth Ericson</a>
+    <div class="nav-links">
+      <a href="index.html#stats">Stats</a>
+      <a href="index.html#academics">Academics</a>
+      <a href="index.html#teams">Teams</a>
+      <a href="trends.html" class="active">Stat Trends</a>
+      <a href="vault.html">Clips Vault</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="trends-hero">
+  <div class="trends-hero-bg"></div>
+  <div class="trends-hero-inner">
+    <div class="trends-kicker reveal">
+      <span class="grad-dot"></span>
+      <span>Stat Trends</span>
+      <span class="div"></span>
+      <span class="muted">Spring 2026 · school + travel</span>
+    </div>
+    <h1 class="trends-title reveal">Statistical Trends.</h1>
+    <p class="trends-sub reveal">Tracking how the hitting line has moved since the first recorded snapshot on April 22, 2026. Each plotted point reflects a real update — a game, a tournament, or a fresh round of at-bats.</p>
+  </div>
+</section>
+
+<!-- ============ CHART ============ -->
+<section class="chart-section">
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="chart-container">
+
+    <div class="stat-legend">
+      <div class="legend-card reveal" style="--c: var(--c-ba);">
+        <div class="top">
+          <span class="legend-dot">Batting Average</span>
+        </div>
+        <div class="current-val" id="current-ba">.438</div>
+      </div>
+      <div class="legend-card reveal" style="--c: var(--c-ab);">
+        <div class="top">
+          <span class="legend-dot">At-Bats</span>
+        </div>
+        <div class="current-val" id="current-ab">32</div>
+      </div>
+      <div class="legend-card reveal" style="--c: var(--c-obp);">
+        <div class="top">
+          <span class="legend-dot">On-Base %</span>
+        </div>
+        <div class="current-val" id="current-obp">.564</div>
+      </div>
+    </div>
+
+    <div class="chart-card reveal">
+      <div class="chart-wrap">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+
+    <div class="insight-note reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      Both BA and OBP use the left axis (rate stats, 0–1 scale). At-Bats uses the right axis (count). All numbers are cumulative season totals at each snapshot.
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-contact">
+      <a href="mailto:sericson16@proton.me">sericson16@proton.me</a>
+    </div>
+    <div class="footer-copy">© 2026 Seth Ericson</div>
+  </div>
+</footer>
+
+<script>
+  // ----- Stat history -----
+  const labels = ['Apr 22', 'Apr 23', 'Apr 24', 'Apr 27', 'Apr 28', 'Apr 30'];
+  const baData  = [0.500, 0.533, 0.533, 0.400, 0.414, 0.438];
+  const abData  = [14, 15, 15, 25, 29, 32];
+  const obpData = [0.632, 0.652, 0.680, 0.563, 0.556, 0.564];
+
+
+
+  // ----- Chart.js global defaults (dark theme) -----
+  Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = '#a1a1a6';
+
+  const ctx = document.getElementById('trendChart').getContext('2d');
+
+  // gradient fills
+  function makeGradient(color) {
+    const g = ctx.createLinearGradient(0, 0, 0, 460);
+    g.addColorStop(0, color + '33');
+    g.addColorStop(1, color + '00');
+    return g;
+  }
+
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'BA',
+          data: baData,
+          borderColor: '#5e8bff',
+          backgroundColor: makeGradient('#5e8bff'),
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#5e8bff',
+          pointBorderColor: '#000',
+          pointBorderWidth: 2,
+          tension: 0.35,
+          fill: true,
+          yAxisID: 'yRate'
+        },
+        {
+          label: 'OBP',
+          data: obpData,
+          borderColor: '#2dd4bf',
+          backgroundColor: makeGradient('#2dd4bf'),
+          borderWidth: 2.5,
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#2dd4bf',
+          pointBorderColor: '#000',
+          pointBorderWidth: 2,
+          tension: 0.35,
+          fill: true,
+          yAxisID: 'yRate'
+        },
+        {
+          label: 'AB',
+          data: abData,
+          borderColor: '#ff9f4a',
+          backgroundColor: 'rgba(255, 159, 74, 0.08)',
+          borderWidth: 2.5,
+          borderDash: [6, 4],
+          pointRadius: 4,
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#ff9f4a',
+          pointBorderColor: '#000',
+          pointBorderWidth: 2,
+          tension: 0.35,
+          fill: false,
+          yAxisID: 'yCount'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'end',
+          labels: {
+            usePointStyle: true,
+            pointStyle: 'circle',
+            padding: 18,
+            color: '#f5f5f7',
+            font: { size: 12, weight: '500' }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(10, 10, 12, 0.95)',
+          borderColor: 'rgba(255,255,255,0.12)',
+          borderWidth: 1,
+          padding: 12,
+          titleColor: '#ffffff',
+          titleFont: { weight: '600', size: 13 },
+          bodyColor: '#a1a1a6',
+          bodyFont: { size: 12 },
+          cornerRadius: 10,
+          displayColors: true,
+          boxPadding: 6,
+          callbacks: {
+            label: function(ctx) {
+              const v = ctx.parsed.y;
+              if (ctx.dataset.label === 'AB') {
+                return ' ' + ctx.dataset.label + ':  ' + v;
+              } else {
+                return ' ' + ctx.dataset.label + ':  ' + v.toFixed(3).replace(/^0/, '');
+              }
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            color: 'rgba(255,255,255,0.04)',
+            drawBorder: false
+          },
+          ticks: {
+            color: '#6e6e73',
+            padding: 8
+          },
+          border: { color: 'rgba(255,255,255,0.08)' }
+        },
+        yRate: {
+          type: 'linear',
+          position: 'left',
+          min: 0.3,
+          max: 0.75,
+          grid: {
+            color: 'rgba(255,255,255,0.04)',
+            drawBorder: false
+          },
+          ticks: {
+            color: '#6e6e73',
+            padding: 8,
+            stepSize: 0.05,
+            callback: function(value) {
+              return value.toFixed(3).replace(/^0/, '');
+            }
+          },
+          border: { color: 'rgba(255,255,255,0.08)' },
+          title: {
+            display: true,
+            text: 'BA  /  OBP',
+            color: '#a1a1a6',
+            font: { size: 11, weight: '500' }
+          }
+        },
+        yCount: {
+          type: 'linear',
+          position: 'right',
+          min: 0,
+          max: 40,
+          grid: { display: false, drawBorder: false },
+          ticks: {
+            color: '#6e6e73',
+            padding: 8,
+            stepSize: 5
+          },
+          border: { color: 'rgba(255,255,255,0.08)' },
+          title: {
+            display: true,
+            text: 'AB',
+            color: '#a1a1a6',
+            font: { size: 11, weight: '500' }
+          }
+        }
+      }
+    }
+  });
+
+  // ----- Reveal animations -----
+  (function () {
+    const items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+      items.forEach(el => el.classList.add('visible'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), (i % 6) * 60);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(el => io.observe(el));
+  })();
+
+  // Nav hide on scroll
+  (function () {
+    const nav = document.querySelector('nav');
+    let last = window.scrollY;
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      window.requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (y > last && y > 120) nav.style.transform = 'translateY(-100%)';
+        else nav.style.transform = 'translateY(0)';
+        last = y;
+        ticking = false;
+      });
+      ticking = true;
+    }, { passive: true });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "fe80ebd3e677433ba13b26012b505135"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
