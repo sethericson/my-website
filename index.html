@@ -93,9 +93,24 @@
     box-shadow: 0 0 10px rgba(94, 139, 255, 0.5);
     animation: navpulse 2.4s ease-in-out infinite;
   }
+  .nav-links .updated-pill {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 700; font-family: 'JetBrains Mono', monospace;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(45, 212, 191, 0.12);
+    border: 1px solid rgba(45, 212, 191, 0.45);
+    color: #5eead4;
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.25);
+    animation: navpulseUpdated 2.6s ease-in-out infinite;
+  }
   @keyframes navpulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.78; transform: scale(0.95); }
+  }
+  @keyframes navpulseUpdated {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(45, 212, 191, 0.25); }
+    50% { opacity: 0.85; box-shadow: 0 0 14px rgba(45, 212, 191, 0.45); }
   }
   @media (max-width: 680px) {
     .nav-inner { padding: 11px 18px; }
@@ -956,7 +971,7 @@
       <a href="#academics" class="hide-sm">Academics</a>
       <a href="#teams">Teams</a>
       <a href="https://sethericson.com/trends" target="_blank" rel="noopener">Stat Trends</a>
-      <a href="https://sethericson.com/vault" target="_blank" rel="noopener" class="has-new">Clips Vault<span class="new-pill">New</span></a>
+      <a href="https://sethericson.com/vault" target="_blank" rel="noopener" class="has-new">Clips Vault<span class="updated-pill" data-expires="2026-05-08T18:00:00-04:00">Updated</span></a>
     </div>
   </div>
 </nav>
@@ -1029,7 +1044,7 @@
       <div class="video-block reveal">
         <div class="video-frame">
           <iframe
-            src="https://www.youtube.com/embed/fQLIMwsFsWw?si=dBKpIpsGH60jsGcD"
+            src="https://www.youtube.com/embed/KkCqhaJABHE"
             title="Seth Ericson — Most Recent Performance"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -1215,6 +1230,27 @@
 </footer>
 
 <script>
+  // Auto-expire "Updated" pill at its data-expires datetime
+  (function () {
+    document.querySelectorAll('.updated-pill[data-expires]').forEach(function (el) {
+      var expires = new Date(el.getAttribute('data-expires'));
+      if (isNaN(expires.getTime())) return;
+      function check() {
+        if (Date.now() >= expires.getTime()) {
+          el.remove();
+        }
+      }
+      check();
+      // Re-check periodically while the page is open
+      if (document.body.contains(el)) {
+        var iv = setInterval(function () {
+          check();
+          if (!document.body.contains(el)) clearInterval(iv);
+        }, 30000); // every 30s
+      }
+    });
+  })();
+
   // IntersectionObserver reveal
   (function () {
     const items = document.querySelectorAll('.reveal');
