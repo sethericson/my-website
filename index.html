@@ -2,9 +2,17 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Seth Ericson — 2031 | 1B / OF / LHP" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#4E0B20" />
 <title>Seth Ericson — 2031 | 1B / OF / LHP |</title>
+<link rel="icon" href="/favicon.ico" sizes="48x48 96x96" />
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+<link rel="icon" type="image/png" sizes="144x144" href="/favicon-144.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<meta name="description" content="Seth Ericson, class of 2031. First base, outfield, left-handed pitcher." />
 <!-- Open Graph / social preview -->
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Seth Ericson" />
@@ -19,872 +27,332 @@
 <meta name="twitter:title" content="Seth Ericson — 2031 | 1B / OF / LHP" />
 <meta name="twitter:description" content="Class of 2031 · 1B / OF / LHP · L/L. Recruiting profile." />
 <meta name="twitter:image" content="https://sethericson.com/preview.png" />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%238A1538'/><text x='50%25' y='50%25' dy='0.34em' text-anchor='middle' font-family='Inter, system-ui, sans-serif' font-weight='700' font-size='30' letter-spacing='-1.5' fill='%23ffffff'>SE</text></svg>" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
 <style>
-  :root {
-    /* Base dark palette */
-    --bg-0: #000000;
-    --ink-0: #ffffff;
-    --ink-1: #f5f5f7;        /* Apple off-white */
-    --ink-2: #a1a1a6;        /* Apple secondary gray */
-    --ink-3: #6e6e73;        /* Apple tertiary gray */
-    --ink-4: #3a3a3c;
-    --line: rgba(255, 255, 255, 0.08);
-    --line-strong: rgba(255, 255, 255, 0.14);
+:root{
+  --base:#5A0D24;          /* page: Sidwell maroon, one step darker */
+  --base-alt:#661029;      /* alternate sections */
+  --deep:#40091A;          /* footer */
+  --maroon:#8A1538;        /* Sidwell Maroon */
+  --red:#F2464F;           /* Friends Red, lifted slightly to read on dark */
+  --gray:#C3C5CA;          /* Quaker Gray, for labels on dark */
+  --text:#FFF5F7;
+  --muted:rgba(255,238,242,.66);
+  --line:rgba(255,255,255,.12);
+  --glass:rgba(255,255,255,.06);
+  --glass-2:rgba(255,255,255,.1);
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--body);font-size:1.0625rem;line-height:1.6;
+  color:var(--text);background:var(--base);overflow-x:hidden;
+}
+::selection{background:var(--red);color:#fff}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px;border-radius:6px}
+.wrap{width:min(1120px,100% - 2.5rem);margin-inline:auto}
 
-    /* Section-specific accents */
-    --c-hero:     #5e8bff;   /* cool blue */
-    --c-acad:     #8b5cf6;   /* violet */
-    --c-meas:     #2dd4bf;   /* teal */
-    --c-sched:    #f472b6;   /* pink */
+/* ---------- nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top,0px);transition:background .35s,box-shadow .35s}
+.nav.scrolled{background:rgba(74,11,30,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{display:flex;align-items:center;gap:.7rem;text-decoration:none;font-family:var(--display);font-weight:700;font-size:1.2rem;letter-spacing:-.01em}
+.mono{width:34px;height:34px;border-radius:10px;background:var(--maroon);border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;font-size:.85rem;font-weight:700;letter-spacing:-.02em}
+.btn{display:inline-flex;align-items:center;gap:.55rem;font-weight:700;font-size:1rem;text-decoration:none;border-radius:999px;padding:.8rem 1.4rem;transition:background .25s,transform .25s,box-shadow .25s,border-color .25s}
+.btn-light{background:#fff;color:var(--base)}
+.btn-light:hover{transform:translateY(-2px);box-shadow:0 12px 26px -10px rgba(0,0,0,.45)}
+.btn-ghost{border:1.5px solid rgba(255,255,255,.3);color:#fff;padding:.6rem 1.15rem;font-size:.95rem}
+.btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.55)}
+.btn svg{width:18px;height:18px}
 
-    --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  }
+/* ---------- hero ---------- */
+.hero{
+  position:relative;padding:140px 0 96px;
+  background:
+    radial-gradient(900px 520px at 12% 0%, rgba(138,21,56,.9), transparent 60%),
+    radial-gradient(700px 480px at 100% 100%, rgba(64,9,26,.9), transparent 65%),
+    var(--base);
+}
+.hero-grid{display:grid;grid-template-columns:1.25fr .9fr;gap:3.5rem;align-items:end}
+.kicker{display:inline-block;font-weight:700;font-size:.95rem;color:var(--gray);background:var(--glass);border:1px solid var(--line);padding:.4rem .95rem;border-radius:999px}
+.hero h1{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(3.6rem,10vw,7.4rem);line-height:.95;letter-spacing:-.035em;
+  margin:1.4rem 0 1.5rem;
+}
+.hero h1 span{display:block}
+.positions{font-size:clamp(1.15rem,2vw,1.35rem);color:var(--muted)}
+.positions b{color:var(--text);font-weight:700}
+.positions .pos{white-space:nowrap}
+.positions .sep{color:rgba(255,255,255,.25);margin:0 .2rem}
+.pill{display:inline-block;font-size:.72em;font-weight:700;color:#fff;background:var(--red);padding:.15rem .6rem;border-radius:999px;margin-left:.5rem;vertical-align:.12em}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg-0);
-    color: var(--ink-1);
-    line-height: 1.47;
-    font-feature-settings: "ss01", "cv11";
-    overflow-x: hidden;
-    letter-spacing: -0.003em;
-  }
-  ::selection { background: var(--c-hero); color: #fff; }
+.measures{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:2.2rem 0 2.2rem;max-width:600px}
+@media(max-width:520px){.measures{grid-template-columns:repeat(2,1fr)}}
+.measure{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:.9rem 1rem}
+.measure dt{font-size:.85rem;color:var(--gray)}
+.measure dd{font-family:var(--display);font-weight:600;font-size:1.55rem;line-height:1.2;letter-spacing:-.01em}
 
-  /* ---------- Nav ---------- */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    backdrop-filter: saturate(180%) blur(22px);
-    -webkit-backdrop-filter: saturate(180%) blur(22px);
-    background: rgba(0, 0, 0, 0.62);
-    border-bottom: 1px solid var(--line);
-    transition: transform 300ms var(--ease);
-  }
-  .nav-inner {
-    max-width: 1080px; margin: 0 auto;
-    padding: 13px 28px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .nav-brand {
-    font-weight: 600; letter-spacing: -0.01em; font-size: 14px;
-    color: var(--ink-1);
-  }
-  @media (max-width: 680px) {
-    .nav-inner { padding: 11px 18px; }
-  }
+.year-card{
+  background:linear-gradient(160deg,rgba(255,255,255,.1),rgba(255,255,255,.03));
+  border:1px solid var(--line);border-radius:24px;padding:2rem;
+  box-shadow:0 30px 60px -30px rgba(0,0,0,.6);
+}
+.year-card small{display:block;color:var(--gray);font-size:.95rem}
+.year-card .year{font-family:var(--display);font-weight:700;font-size:clamp(4.2rem,8vw,6rem);line-height:1;letter-spacing:-.04em;margin:.3rem 0 1.4rem}
+.year-card dl{display:grid;gap:.7rem;border-top:1px solid var(--line);padding-top:1.2rem}
+.year-card dl div{display:flex;justify-content:space-between;gap:1rem}
+.year-card dt{color:var(--muted)}
+.year-card dd{font-weight:700;text-align:right}
+.hero-grid > *{min-width:0}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:2.5rem}.hero{padding:120px 0 72px}}
 
-  /* ---------- Section base ---------- */
-  section { padding: 112px 28px; position: relative; overflow: hidden; }
-  .container { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
+/* hero intro: the one orchestrated moment */
+.hero .rise{opacity:0;transform:translateY(22px);filter:blur(6px)}
+.ready .hero .rise{opacity:1;transform:none;filter:none;transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+.ready .hero .rise.d1{transition-delay:.05s}
+.ready .hero .rise.d2{transition-delay:.15s}
+.ready .hero .rise.d3{transition-delay:.25s}
+.ready .hero .rise.d4{transition-delay:.4s}
+.ready .hero .rise.d5{transition-delay:.5s}
+.ready .hero .rise.d6{transition-delay:.6s}
+.ready .hero .rise.d7{transition-delay:.35s}
 
-  .eyebrow {
-    font-size: 13px; letter-spacing: -0.01em;
-    font-weight: 500;
-    background: linear-gradient(90deg, var(--accent-eyebrow, var(--c-hero)), var(--accent-eyebrow-2, var(--c-hero)));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-    margin-bottom: 14px;
-  }
-  .section-title {
-    font-size: clamp(34px, 5vw, 56px);
-    font-weight: 600;
-    letter-spacing: -0.035em;
-    line-height: 1.05;
-    color: var(--ink-0);
-    margin-bottom: 14px;
-  }
-  .section-sub {
-    font-size: clamp(17px, 1.8vw, 20px);
-    color: var(--ink-2);
-    font-weight: 400;
-    max-width: 640px;
-    margin-bottom: 56px;
-    letter-spacing: -0.01em;
-  }
+/* ---------- sections ---------- */
+section.block{padding:6rem 0}
+.block.alt{background:var(--base-alt)}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(2.1rem,4.5vw,3.1rem);line-height:1.05;letter-spacing:-.025em}
+.season{font-weight:700;font-size:.92rem;color:var(--gray);border:1px solid var(--line);padding:.35rem .9rem;border-radius:999px}
+.dek{color:var(--muted);max-width:60ch;margin-bottom:2.4rem}
 
-  /* Decorative soft glow blob */
-  .glow {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.35;
-    pointer-events: none;
-    z-index: 0;
-  }
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
 
-  /* ============ HERO ============ */
-  .hero {
-    min-height: 100vh; min-height: 100dvh;
-    padding-top: 110px; padding-bottom: 80px;
-    display: flex; align-items: center;
-    background: #000;
-  }
-  .hero-bg {
-    position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    background:
-      radial-gradient(ellipse 900px 500px at 20% 10%, rgba(94, 139, 255, 0.22), transparent 55%),
-      radial-gradient(ellipse 700px 500px at 85% 90%, rgba(139, 92, 246, 0.18), transparent 60%),
-      radial-gradient(ellipse 600px 400px at 50% 50%, rgba(45, 212, 191, 0.08), transparent 60%),
-      linear-gradient(180deg, #000 0%, #07070a 100%);
-  }
-  .hero::after {
-    content: '';
-    position: absolute; inset: 0; pointer-events: none;
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
-    background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 0%, transparent 80%);
-    -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, black 0%, transparent 80%);
-    opacity: 0.5;
-  }
-  .hero-inner {
-    position: relative; z-index: 1;
-    width: 100%; max-width: 1080px; margin: 0 auto;
-  }
-  .hero-kicker {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 7px 14px 7px 10px;
-    border: 1px solid var(--line-strong);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(10px);
-    font-size: 12.5px; font-weight: 500;
-    color: var(--ink-1);
-    margin-bottom: 28px;
-  }
-  .hero-kicker .grad-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--c-hero), var(--c-acad));
-    box-shadow: 0 0 10px rgba(94, 139, 255, 0.6);
-  }
-  .hero-kicker .div { width: 1px; height: 12px; background: var(--line-strong); }
-  .hero-kicker .muted { color: var(--ink-3); }
+/* profile */
+.profile{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:860px){.profile{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.profile{grid-template-columns:1fr}}
+.cell{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:1.2rem 1.3rem;transition:background .25s,border-color .25s}
+.cell:hover{background:var(--glass-2);border-color:rgba(255,255,255,.2)}
+.cell dt{font-size:.88rem;color:var(--gray);margin-bottom:.2rem}
+.cell dd{font-family:var(--display);font-weight:600;font-size:1.3rem;letter-spacing:-.01em;word-break:break-word}
+.cell dd.email{font-family:var(--body);font-weight:700;font-size:1rem}
+.cell dd a{text-decoration:none;border-bottom:1.5px solid rgba(255,255,255,.3)}
+.cell dd a:hover{border-bottom-color:#fff}
 
-  .name {
-    font-size: clamp(56px, 10vw, 120px);
-    font-weight: 600;
-    letter-spacing: -0.05em;
-    line-height: 0.96;
-    color: var(--ink-0);
-    margin-bottom: 22px;
-    background: linear-gradient(180deg, #ffffff 0%, #c7cad1 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .jersey-row {
-    display: flex; align-items: center; gap: 14px; margin-bottom: 32px;
-    flex-wrap: wrap;
-  }
-  .positions-line {
-    font-size: clamp(17px, 2vw, 21px);
-    font-weight: 400; letter-spacing: -0.015em;
-    color: var(--ink-2);
-  }
-  .positions-line .primary {
-    color: var(--ink-0); font-weight: 600;
-  }
-  .positions-line .slash { color: var(--ink-4); margin: 0 8px; }
-  .positions-line .primary-tag {
-    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--c-hero); font-weight: 600;
-    margin-left: 6px; vertical-align: middle;
-    padding: 2px 6px; border: 1px solid rgba(94, 139, 255, 0.4);
-    border-radius: 4px; background: rgba(94, 139, 255, 0.08);
-  }
+/* tests */
+.tests{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+@media(max-width:800px){.tests{grid-template-columns:1fr}}
+.test{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:1.8rem 1.9rem 1.6rem}
+.test-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:.4rem}
+.test h3{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.01em}
+.test-top span{font-size:.9rem;color:var(--gray)}
+.row{padding:1.1rem 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none;padding-bottom:.2rem}
+.row-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem}
+.row-top span{font-weight:700}
+.row-top b{font-variant-numeric:tabular-nums;font-family:var(--display);font-weight:600;font-size:2.3rem;line-height:1;letter-spacing:-.02em}
+.row-top b sup{font-family:var(--body);font-size:.9rem;color:var(--gray);font-weight:400;margin-left:2px;vertical-align:1.1em}
+.bar{height:8px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#fff 0%,var(--red) 100%);transition:width 1.4s var(--ease) .2s}
+.in .bar i{width:var(--pct)}
+.note{margin-top:1.4rem;font-size:.95rem;color:var(--muted)}
 
-  .measure-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    margin-bottom: 36px;
-    max-width: 640px;
-    border: 1px solid var(--line);
-    border-radius: 16px; overflow: hidden;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
-    backdrop-filter: blur(8px);
-  }
-  .measure-cell {
-    padding: 18px 20px;
-    border-right: 1px solid var(--line);
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .measure-cell:last-child { border-right: none; }
-  .measure-cell .label {
-    font-size: 11px; color: var(--ink-3); font-weight: 500;
-    letter-spacing: -0.005em;
-  }
-  .measure-cell .value {
-    font-size: 19px; font-weight: 600; color: var(--ink-0);
-    letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
-  }
-  @media (max-width: 560px) {
-    .measure-strip { grid-template-columns: repeat(2, 1fr); }
-    .measure-cell:nth-child(2) { border-right: none; }
-    .measure-cell:nth-child(1), .measure-cell:nth-child(2) {
-      border-bottom: 1px solid var(--line);
-    }
-  }
+/* locked next year */
+.locked{position:relative}
+.locked .tests{filter:blur(7px);opacity:.45;pointer-events:none;user-select:none;-webkit-user-select:none}
+.locked .bar i{width:var(--pct);transition:none}
+.lock-card{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(400px,88%);text-align:center;
+  background:rgba(64,9,26,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.16);border-radius:22px;padding:1.9rem 1.8rem;
+  box-shadow:0 30px 60px -25px rgba(0,0,0,.7);
+}
+.lock-card .soon{display:inline-block;font-size:.85rem;font-weight:700;color:#fff;background:var(--red);padding:.3rem .85rem;border-radius:999px;margin-bottom:.9rem}
+.lock-card h3{font-family:var(--display);font-weight:700;font-size:1.6rem;letter-spacing:-.01em;margin-bottom:.4rem}
+.lock-card p{color:var(--muted);font-size:1rem}
 
-  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
-  .cta {
-    display: inline-flex; align-items: center; gap: 9px;
-    padding: 13px 22px;
-    border-radius: 999px;
-    font-size: 14.5px; font-weight: 500; letter-spacing: -0.01em;
-    text-decoration: none;
-    transition: all 250ms var(--ease);
-    cursor: pointer; border: none;
-  }
-  .cta-primary {
-    background: var(--ink-1); color: #000;
-  }
-  .cta-primary:hover {
-    background: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
-  }
-  .cta svg { width: 15px; height: 15px; }
+/* footer */
+footer{background:var(--deep);color:var(--muted);padding:2.2rem 0;font-size:.95rem}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+footer a{text-decoration:none;color:rgba(255,255,255,.85);font-weight:700}
+footer a:hover{color:#fff}
 
-  /* ---------- Profile section ---------- */
-  .profile-section {
-    background: linear-gradient(180deg, #07070a 0%, #000 100%);
-    padding: 64px 28px 48px;
-    position: relative;
-    overflow: hidden;
-  }
-  .profile-section .glow-1 {
-    top: -100px; right: -50px; width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(94, 139, 255, 0.15), transparent 70%);
-  }
-  .profile-section .glow-2 {
-    bottom: -100px; left: -50px; width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.12), transparent 70%);
-  }
-  .profile-card-wide {
-    position: relative;
-    max-width: 1080px; margin: 0 auto;
-    background: linear-gradient(160deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%);
-    border: 1px solid var(--line);
-    border-radius: 24px;
-    padding: 32px;
-    backdrop-filter: blur(14px);
-    overflow: hidden;
-    z-index: 1;
-  }
-  .profile-card-wide::before {
-    content: ''; position: absolute; top: -100px; right: -100px;
-    width: 280px; height: 280px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(94, 139, 255, 0.18), transparent 70%);
-    pointer-events: none;
-  }
-  .profile-card-wide::after {
-    content: ''; position: absolute; bottom: -80px; left: -80px;
-    width: 220px; height: 220px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
-    pointer-events: none;
-  }
-  .profile-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding-bottom: 14px; border-bottom: 1px solid var(--line);
-    margin-bottom: 18px; position: relative; z-index: 1;
-  }
-  .profile-header .title {
-    font-size: 13px; letter-spacing: -0.005em;
-    color: var(--ink-1); font-weight: 500;
-  }
-  .profile-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: #5e8bff; font-weight: 600;
-  }
-  .profile-badge::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-    background: #5e8bff; box-shadow: 0 0 10px #5e8bff;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(0.8); }
-  }
-  .profile-grid {
-    position: relative; z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    margin-top: 16px;
-  }
-  @media (max-width: 900px) {
-    .profile-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 480px) {
-    .profile-grid { grid-template-columns: 1fr; }
-  }
-  .profile-cell {
-    padding: 16px 18px;
-    border-right: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .profile-cell:nth-child(4n) { border-right: none; }
-  .profile-cell:nth-child(n+5) { border-bottom: none; }
-  @media (max-width: 900px) {
-    .profile-cell { border-right: none; border-bottom: 1px solid var(--line); }
-    .profile-cell:nth-child(odd) { border-right: 1px solid var(--line); }
-    .profile-cell:nth-child(4n) { border-right: 1px solid var(--line); }
-    .profile-cell:last-child, .profile-cell:nth-last-child(2) { border-bottom: none; }
-  }
-  @media (max-width: 480px) {
-    .profile-cell { border-right: none !important; border-bottom: 1px solid var(--line) !important; }
-    .profile-cell:last-child { border-bottom: none !important; }
-  }
-  .profile-cell .k {
-    font-size: 11px; color: var(--ink-3); font-weight: 500;
-  }
-  .profile-cell .v {
-    font-size: 15px; color: var(--ink-1); font-weight: 600;
-    letter-spacing: -0.015em;
-  }
-  .profile-cell .v.small { font-size: 12px; }
+@media(max-width:560px){.nav .btn-ghost{display:none}section.block{padding:4.5rem 0}}
 
-  /* ============ ACADEMIC SECTION ============ */
-  .academic-section {
-    background: linear-gradient(180deg, #000 0%, #08060e 100%);
-    --accent-eyebrow: var(--c-acad);
-    --accent-eyebrow-2: #c084fc;
-  }
-  .academic-section .glow-1 {
-    top: 0; right: -200px; width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.22), transparent 70%);
-  }
-  .academic-section .glow-2 {
-    bottom: -150px; left: -100px; width: 450px; height: 450px;
-    background: radial-gradient(circle, rgba(192, 132, 252, 0.15), transparent 70%);
-  }
-  .test-sets {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  @media (max-width: 760px) {
-    .test-sets { grid-template-columns: 1fr; }
-  }
-  .test-set {
-    position: relative;
-    background: linear-gradient(160deg, rgba(139, 92, 246, 0.09), rgba(139, 92, 246, 0.02));
-    border: 1px solid rgba(139, 92, 246, 0.15);
-    border-radius: 22px;
-    padding: 30px;
-    overflow: hidden;
-  }
-  .test-set::before {
-    content: ''; position: absolute; top: -80px; right: -80px;
-    width: 220px; height: 220px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.22), transparent 70%);
-    pointer-events: none;
-  }
-  .test-set-header {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 28px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    position: relative; z-index: 1;
-  }
-  .test-set-label {
-    font-size: 11.5px; color: #c084fc; font-weight: 500;
-    margin-bottom: 6px; letter-spacing: -0.005em;
-  }
-  .test-set-title {
-    font-size: 19px; font-weight: 600; letter-spacing: -0.02em;
-    color: var(--ink-0);
-  }
-  .test-set-badge {
-    font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--ink-2); font-weight: 500;
-    padding: 4px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--line-strong);
-    border-radius: 999px;
-  }
-  .test-row { margin-bottom: 22px; position: relative; z-index: 1; }
-  .test-row:last-child { margin-bottom: 0; }
-  .test-row-top {
-    display: flex; justify-content: space-between; align-items: baseline;
-    margin-bottom: 10px;
-  }
-  .test-subject {
-    font-size: 14.5px; font-weight: 500; color: var(--ink-1);
-  }
-  .test-pct {
-    font-size: 30px; font-weight: 600; letter-spacing: -0.035em;
-    background: linear-gradient(135deg, #ffffff 0%, #c084fc 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-variant-numeric: tabular-nums;
-  }
-  .test-pct .suffix { font-size: 13px; color: var(--ink-3); font-weight: 400; margin-left: 2px; -webkit-text-fill-color: var(--ink-3); }
-  .progress-wrap {
-    height: 6px; background: rgba(255, 255, 255, 0.06);
-    border-radius: 999px; overflow: hidden;
-  }
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #8b5cf6, #c084fc, #f472b6);
-    border-radius: 999px;
-    width: 0;
-    transition: width 1200ms cubic-bezier(0.22, 1, 0.36, 1);
-    box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
-  }
-  .visible .progress-bar { width: var(--pct); }
-  .percentile-note {
-    margin-top: 28px;
-    font-size: 13px; color: var(--ink-2);
-    display: flex; align-items: center; gap: 10px;
-  }
-  .percentile-note .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-acad); box-shadow: 0 0 8px var(--c-acad); }
-
-  /* ============ MEASURABLES SECTION ============ */
-  .measurables-section {
-    background: linear-gradient(180deg, #08060e 0%, #04100d 100%);
-    --accent-eyebrow: var(--c-meas);
-    --accent-eyebrow-2: #5eead4;
-  }
-  .measurables-section .glow-1 {
-    top: -100px; left: 30%; width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(45, 212, 191, 0.2), transparent 70%);
-  }
-  .measurables-section .glow-2 {
-    bottom: -150px; right: -100px; width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(94, 234, 212, 0.12), transparent 70%);
-  }
-
-  /* Locked wrapper: blurred content + overlay */
-  .locked-wrap {
-    position: relative;
-    border-radius: 22px;
-    overflow: hidden;
-  }
-  .locked-content {
-    filter: blur(9px);
-    -webkit-filter: blur(9px);
-    opacity: 0.5;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  .locked-overlay {
-    position: absolute; inset: 0;
-    z-index: 2;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 16px;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    border-radius: 22px;
-    border: 1px solid var(--line);
-  }
-  .lock-icon {
-    width: 46px; height: 46px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(45, 212, 191, 0.1);
-    border: 1px solid rgba(45, 212, 191, 0.35);
-    box-shadow: 0 0 24px rgba(45, 212, 191, 0.2);
-  }
-  .lock-icon svg { width: 18px; height: 18px; color: #5eead4; }
-  .locked-overlay .lock-title {
-    font-size: clamp(22px, 3vw, 30px);
-    font-weight: 600; letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #ffffff 0%, #5eead4 130%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .locked-overlay .lock-sub {
-    font-size: 13px; color: var(--ink-2);
-    letter-spacing: 0.02em;
-    text-align: center;
-    max-width: 340px;
-    padding: 0 20px;
-  }
-
-  .measurables-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    padding: 30px;
-  }
-  @media (max-width: 900px) {
-    .measurables-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 22px; }
-  }
-  .meas-card {
-    background: linear-gradient(160deg, rgba(45, 212, 191, 0.08), rgba(45, 212, 191, 0.02));
-    border: 1px solid rgba(45, 212, 191, 0.15);
-    border-radius: 16px;
-    padding: 26px 22px;
-  }
-  .meas-label {
-    font-size: 12px; color: var(--ink-2); font-weight: 500;
-    margin-bottom: 4px;
-  }
-  .meas-sublabel {
-    font-size: 11px; color: var(--ink-3); margin-bottom: 20px;
-  }
-  .meas-value {
-    font-size: 40px; font-weight: 600; letter-spacing: -0.05em;
-    line-height: 1;
-    color: var(--ink-0);
-    font-variant-numeric: tabular-nums;
-  }
-  .meas-value .unit { font-size: 15px; color: var(--ink-3); font-weight: 500; margin-left: 3px; }
-
-  /* ---------- Footer ---------- */
-  footer {
-    padding: 52px 28px 44px;
-    background: #000;
-    border-top: 1px solid var(--line);
-    position: relative;
-    overflow: hidden;
-  }
-  footer::before {
-    content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
-    width: 60%; height: 1px;
-    background: linear-gradient(90deg,
-      transparent, var(--c-hero), var(--c-acad),
-      var(--c-meas), var(--c-sched), transparent);
-    opacity: 0.6;
-  }
-  .footer-inner {
-    max-width: 1080px; margin: 0 auto;
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 20px;
-    position: relative; z-index: 1;
-  }
-  .footer-contact {
-    display: flex; gap: 22px; flex-wrap: wrap;
-  }
-  .footer-contact a {
-    color: var(--ink-2); text-decoration: none; font-size: 13.5px; font-weight: 400;
-    transition: color 200ms var(--ease);
-  }
-  .footer-contact a:hover { color: var(--ink-0); }
-  .footer-copy {
-    color: var(--ink-3); font-size: 12px;
-    letter-spacing: -0.005em;
-  }
-
-  /* ---------- Scroll reveal ---------- */
-  .reveal {
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 700ms var(--ease), transform 700ms var(--ease);
-    will-change: opacity, transform;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; transition: none; }
-    .progress-bar { transition: none; }
-    * { animation: none !important; }
-  }
-
-  @media (max-width: 680px) {
-    section { padding: 88px 20px; }
-    .hero { padding-top: 96px; padding-bottom: 60px; }
-    footer { padding: 40px 20px; }
-    .profile-card-wide { padding: 24px; }
-    .test-set { padding: 24px; }
-  }
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .hero .rise,.reveal{opacity:1!important;transform:none!important;filter:none!important}
+  .bar i{width:var(--pct)!important}
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <div class="nav-brand">Seth Ericson</div>
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a href="#top" class="brand" aria-label="Seth Ericson, back to top"><span class="mono" aria-hidden="true">SE</span>Seth Ericson</a>
+    <a href="mailto:sericson16@proton.me" class="btn btn-ghost">Email Seth</a>
   </div>
 </nav>
 
-<!-- ============ HERO ============ -->
-<section class="hero" id="top">
-  <div class="hero-bg"></div>
-  <div class="hero-inner">
-    <div class="hero-kicker reveal">
-      <span class="grad-dot"></span>
-      <span>Class of 2031</span>
-      <span class="div"></span>
-      <span class="muted">1B · OF · LHP</span>
-      <span class="div"></span>
-      <span class="muted">L / L</span>
-    </div>
-
-    <h1 class="name reveal">Seth<br/>Ericson.</h1>
-
-    <div class="jersey-row reveal">
-      <div class="positions-line">
-        <span class="primary">1B</span><span class="primary-tag">Primary</span>
-        <span class="slash">/</span>OF
-        <span class="slash">/</span>LHP
+<main id="top">
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="kicker rise d1">Class of 2031</span>
+        <h1><span class="rise d2">Seth</span><span class="rise d3">Ericson</span></h1>
+        <p class="positions rise d4">
+          <span class="pos"><b>First base</b><span class="pill">Primary</span></span> <span class="sep">/</span> <span class="pos">Outfield</span> <span class="sep">/</span> <span class="pos">Left-handed pitcher</span>
+        </p>
+        <dl class="measures rise d5">
+          <div class="measure"><dt>Height</dt><dd>5&#39;11&quot;</dd></div>
+          <div class="measure"><dt>Weight</dt><dd>165 lb</dd></div>
+          <div class="measure"><dt>Bats</dt><dd>Left</dd></div>
+          <div class="measure"><dt>Throws</dt><dd>Left</dd></div>
+        </dl>
+        <a class="btn btn-light rise d6" href="mailto:sericson16@proton.me">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email Seth
+        </a>
       </div>
-    </div>
 
-    <div class="measure-strip reveal">
-      <div class="measure-cell">
-        <span class="label">Height</span>
-        <span class="value">5&#39;11&quot;</span>
+      <aside class="year-card rise d7" aria-label="Class summary">
+        <small>Graduating class</small>
+        <div class="year">2031</div>
+        <dl>
+          <div><dt>Positions</dt><dd>1B / OF / LHP</dd></div>
+          <div><dt>Bats / throws</dt><dd>L / L</dd></div>
+          <div><dt>Size</dt><dd>5&#39;11&quot;, 165 lb</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </header>
+
+  <section class="block alt" aria-labelledby="profile-h">
+    <div class="wrap">
+      <div class="head reveal"><h2 id="profile-h">Recruiting profile</h2></div>
+      <dl class="profile reveal" style="margin-top:1.6rem">
+        <div class="cell"><dt>Name</dt><dd>Seth Ericson</dd></div>
+        <div class="cell"><dt>Grad year</dt><dd>2031</dd></div>
+        <div class="cell"><dt>Primary</dt><dd>1B</dd></div>
+        <div class="cell"><dt>Secondary</dt><dd>OF, LHP</dd></div>
+        <div class="cell"><dt>Height</dt><dd>5&#39;11&quot;</dd></div>
+        <div class="cell"><dt>Weight</dt><dd>165 lb</dd></div>
+        <div class="cell"><dt>Bats / throws</dt><dd>L / L</dd></div>
+        <div class="cell"><dt>Email</dt><dd class="email"><a href="mailto:sericson16@proton.me">sericson16@proton.me</a></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="iready-h">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2 id="iready-h">i-Ready diagnostic</h2>
+        <span class="season">2025&ndash;26 school year</span>
       </div>
-      <div class="measure-cell">
-        <span class="label">Weight</span>
-        <span class="value">165</span>
+      <p class="dek reveal">National percentile rankings in math and reading from the 2025&ndash;26 school year, measured at the start of the year and again at midyear.</p>
+
+      <div class="tests">
+        <article class="test reveal">
+          <div class="test-top"><h3>Start of year</h3><span>Beginning</span></div>
+          <div class="row"><div class="row-top"><span>Math</span><b><span class="count" data-to="99">99</span><sup>th</sup></b></div><div class="bar"><i style="--pct:99%"></i></div></div>
+          <div class="row"><div class="row-top"><span>Reading</span><b><span class="count" data-to="99">99</span><sup>th</sup></b></div><div class="bar"><i style="--pct:99%"></i></div></div>
+        </article>
+        <article class="test reveal">
+          <div class="test-top"><h3>Midyear</h3><span>Second semester</span></div>
+          <div class="row"><div class="row-top"><span>Math</span><b><span class="count" data-to="97">97</span><sup>th</sup></b></div><div class="bar"><i style="--pct:97%"></i></div></div>
+          <div class="row"><div class="row-top"><span>Reading</span><b><span class="count" data-to="99">99</span><sup>th</sup></b></div><div class="bar"><i style="--pct:99%"></i></div></div>
+        </article>
       </div>
-      <div class="measure-cell">
-        <span class="label">Bats</span>
-        <span class="value">L</span>
+      <p class="note reveal">All scores are national percentile rankings from the 2025&ndash;26 school year.</p>
+    </div>
+  </section>
+
+  <section class="block alt" aria-labelledby="next-h">
+    <div class="wrap">
+      <div class="head reveal">
+        <h2 id="next-h">First semester</h2>
+        <span class="season">2026&ndash;27 school year</span>
       </div>
-      <div class="measure-cell">
-        <span class="label">Throws</span>
-        <span class="value">L</span>
-      </div>
-    </div>
+      <p class="dek reveal">This year&rsquo;s i-Ready results will be posted here once the fall testing window closes.</p>
 
-    <div class="cta-row reveal">
-      <a class="cta cta-primary" href="mailto:sericson16@proton.me">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Email Me
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PROFILE ============ -->
-<section class="profile-section">
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-  <div class="profile-card-wide reveal">
-    <div class="profile-header">
-      <span class="title">Recruiting Profile</span>
-      <span class="profile-badge">Active</span>
-    </div>
-    <div class="profile-grid">
-      <div class="profile-cell"><span class="k">Name</span><span class="v">Seth Ericson</span></div>
-      <div class="profile-cell"><span class="k">Grad Year</span><span class="v">2031</span></div>
-      <div class="profile-cell"><span class="k">Primary</span><span class="v">1B</span></div>
-      <div class="profile-cell"><span class="k">Secondary</span><span class="v">OF · LHP</span></div>
-      <div class="profile-cell"><span class="k">Height</span><span class="v">5&#39;11&quot;</span></div>
-      <div class="profile-cell"><span class="k">Weight</span><span class="v">165 lb</span></div>
-      <div class="profile-cell"><span class="k">B / T</span><span class="v">L / L</span></div>
-      <div class="profile-cell"><span class="k">Email</span><span class="v small">sericson16@proton.me</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ACADEMICS ============ -->
-<section class="academic-section" id="academics">
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-  <div class="container">
-    <div class="eyebrow reveal">Academics · 2025/26 School Year</div>
-    <h2 class="section-title reveal">i-Ready diagnostic.</h2>
-    <p class="section-sub reveal">National percentile rankings across Math and Reading from the 2025/26 school year — measured at the start of the year and again mid-year.</p>
-
-    <div class="test-sets">
-      <div class="test-set reveal">
-        <div class="test-set-header">
-          <div>
-            <div class="test-set-label">Test 01</div>
-            <div class="test-set-title">Start of Year</div>
-          </div>
-          <span class="test-set-badge">Beginning</span>
+      <div class="locked reveal">
+        <div class="tests" aria-hidden="true">
+          <article class="test">
+            <div class="test-top"><h3>Start of year</h3><span>Beginning</span></div>
+            <div class="row"><div class="row-top"><span>Math</span><b>&mdash;<sup>th</sup></b></div><div class="bar"><i style="--pct:84%"></i></div></div>
+            <div class="row"><div class="row-top"><span>Reading</span><b>&mdash;<sup>th</sup></b></div><div class="bar"><i style="--pct:90%"></i></div></div>
+          </article>
+          <article class="test">
+            <div class="test-top"><h3>Midyear</h3><span>First semester</span></div>
+            <div class="row"><div class="row-top"><span>Math</span><b>&mdash;<sup>th</sup></b></div><div class="bar"><i style="--pct:80%"></i></div></div>
+            <div class="row"><div class="row-top"><span>Reading</span><b>&mdash;<sup>th</sup></b></div><div class="bar"><i style="--pct:88%"></i></div></div>
+          </article>
         </div>
-
-        <div class="test-row">
-          <div class="test-row-top">
-            <span class="test-subject">Math</span>
-            <span class="test-pct">99<span class="suffix">th</span></span>
-          </div>
-          <div class="progress-wrap"><div class="progress-bar" style="--pct: 99%"></div></div>
-        </div>
-        <div class="test-row">
-          <div class="test-row-top">
-            <span class="test-subject">Reading</span>
-            <span class="test-pct">99<span class="suffix">th</span></span>
-          </div>
-          <div class="progress-wrap"><div class="progress-bar" style="--pct: 99%"></div></div>
-        </div>
-      </div>
-
-      <div class="test-set reveal">
-        <div class="test-set-header">
-          <div>
-            <div class="test-set-label">Test 02</div>
-            <div class="test-set-title">Mid-Year</div>
-          </div>
-          <span class="test-set-badge">Second Semester</span>
-        </div>
-
-        <div class="test-row">
-          <div class="test-row-top">
-            <span class="test-subject">Math</span>
-            <span class="test-pct">97<span class="suffix">th</span></span>
-          </div>
-          <div class="progress-wrap"><div class="progress-bar" style="--pct: 97%"></div></div>
-        </div>
-        <div class="test-row">
-          <div class="test-row-top">
-            <span class="test-subject">Reading</span>
-            <span class="test-pct">99<span class="suffix">th</span></span>
-          </div>
-          <div class="progress-wrap"><div class="progress-bar" style="--pct: 99%"></div></div>
+        <div class="lock-card">
+          <span class="soon">Coming soon</span>
+          <h3>2026&ndash;27 results</h3>
+          <p>First-semester scores will be posted once testing is complete.</p>
         </div>
       </div>
     </div>
-
-    <div class="percentile-note reveal">
-      <span class="dot"></span>
-      All scores shown as national percentile rankings · 2025/26 school year.
-    </div>
-  </div>
-</section>
-
-<!-- ============ NEXT YEAR I-READY (LOCKED) ============ -->
-<section class="measurables-section" id="next-academics">
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-  <div class="container">
-    <div class="eyebrow reveal">Academics · 2026/27 School Year</div>
-    <h2 class="section-title reveal">First Semester.</h2>
-    <p class="section-sub reveal">Next year's i-Ready diagnostic results will be posted here once the fall testing window is complete.</p>
-
-    <div class="locked-wrap reveal">
-      <div class="locked-content" aria-hidden="true">
-        <div class="test-sets">
-          <div class="test-set">
-            <div class="test-set-header">
-              <div>
-                <div class="test-set-label">Test 01</div>
-                <div class="test-set-title">Start of Year</div>
-              </div>
-              <span class="test-set-badge">Beginning</span>
-            </div>
-            <div class="test-row">
-              <div class="test-row-top">
-                <span class="test-subject">Math</span>
-                <span class="test-pct">—<span class="suffix">th</span></span>
-              </div>
-              <div class="progress-wrap"><div class="progress-bar" style="width: 88%"></div></div>
-            </div>
-            <div class="test-row">
-              <div class="test-row-top">
-                <span class="test-subject">Reading</span>
-                <span class="test-pct">—<span class="suffix">th</span></span>
-              </div>
-              <div class="progress-wrap"><div class="progress-bar" style="width: 92%"></div></div>
-            </div>
-          </div>
-
-          <div class="test-set">
-            <div class="test-set-header">
-              <div>
-                <div class="test-set-label">Test 02</div>
-                <div class="test-set-title">Mid-Year</div>
-              </div>
-              <span class="test-set-badge">First Semester</span>
-            </div>
-            <div class="test-row">
-              <div class="test-row-top">
-                <span class="test-subject">Math</span>
-                <span class="test-pct">—<span class="suffix">th</span></span>
-              </div>
-              <div class="progress-wrap"><div class="progress-bar" style="width: 85%"></div></div>
-            </div>
-            <div class="test-row">
-              <div class="test-row-top">
-                <span class="test-subject">Reading</span>
-                <span class="test-pct">—<span class="suffix">th</span></span>
-              </div>
-              <div class="progress-wrap"><div class="progress-bar" style="width: 90%"></div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="locked-overlay">
-        <div class="lock-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-          </svg>
-        </div>
-        <div class="lock-title">Coming Soon</div>
-        <div class="lock-sub">2026/27 first-semester i-Ready results will be posted once testing is complete.</div>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
+</main>
 
 <footer>
-  <div class="footer-inner">
-    <div class="footer-contact">
-      <a href="mailto:sericson16@proton.me">sericson16@proton.me</a>
-    </div>
-    <div class="footer-copy">© 2026 Seth Ericson</div>
+  <div class="wrap">
+    <span>&copy; 2026 Seth Ericson</span>
+    <a href="mailto:sericson16@proton.me">sericson16@proton.me</a>
   </div>
 </footer>
 
 <script>
-  // IntersectionObserver reveal
-  (function () {
-    const items = document.querySelectorAll('.reveal');
-    if (!('IntersectionObserver' in window)) {
-      items.forEach(el => el.classList.add('visible'));
-      return;
-    }
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), (i % 6) * 60);
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    items.forEach(el => io.observe(el));
-  })();
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root = document.documentElement;
+  function go(){ requestAnimationFrame(function(){ root.classList.add('ready'); }); }
+  if (reduce || !document.fonts) go();
+  else { var t = setTimeout(go, 800); document.fonts.ready.then(function(){ clearTimeout(t); go(); }); }
 
-  // Nav hide on scroll down / show on scroll up
-  (function () {
-    const nav = document.querySelector('nav');
-    let last = window.scrollY;
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (ticking) return;
-      window.requestAnimationFrame(() => {
-        const y = window.scrollY;
-        if (y > last && y > 120) {
-          nav.style.transform = 'translateY(-100%)';
-        } else {
-          nav.style.transform = 'translateY(0)';
-        }
-        last = y;
-        ticking = false;
+  var nav = document.getElementById('nav');
+  function onScroll(){ nav.classList.toggle('scrolled', scrollY > 10); }
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  function countUp(el){
+    var to = +el.dataset.to, start = null, dur = 1400;
+    el.textContent = '0';
+    setTimeout(function(){
+      requestAnimationFrame(function step(t){
+        if (!start) start = t;
+        var p = Math.min((t - start) / dur, 1);
+        el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
       });
-      ticking = true;
-    }, { passive: true });
-  })();
+    }, 200);
+  }
+
+  var els = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) { els.forEach(function(e){ e.classList.add('in'); }); return; }
+  document.querySelectorAll('.count').forEach(function(c){ c.textContent = '0'; });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      e.target.querySelectorAll('.count').forEach(countUp);
+      io.unobserve(e.target);
+    });
+  }, {threshold:.15, rootMargin:'0px 0px -40px 0px'});
+  els.forEach(function(e){ io.observe(e); });
+})();
 </script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "fe80ebd3e677433ba13b26012b505135"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
