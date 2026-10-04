@@ -108,6 +108,12 @@ footer{margin-top:36px;color:var(--dim);font-size:13px;max-width:62ch}
   @keyframes fade{0%,70%{opacity:1}100%{opacity:0}}
 }
 .demo-tag{color:var(--amber)}
+
+.team{align-items:center}
+.meta{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+.rec{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
+.rec.new{color:var(--muted)}
+.row.lose .rec{color:var(--dim)}
 </style>
 </head>
 <body>
@@ -160,16 +166,36 @@ const GAMES=[
   ["DET","CAR","2026-10-05T00:20:00Z",60.4,39.4,"DET"]
 ].map(g=>({away:g[0],home:g[1],kick:new Date(g[2]),ap:g[3],hp:g[4],pick:g[5],id:g[0]+"-"+g[1]}));
 
+// Records going into today's games [wins, losses, ties]
+const BASE={
+  ARI:[1,2,0],NYG:[2,1,0],NE:[1,2,0],BUF:[3,0,0],NYJ:[1,2,0],CHI:[2,1,0],
+  DAL:[1,2,0],HOU:[0,3,0],LAR:[1,2,0],PHI:[2,1,0],GB:[1,2,0],TB:[0,3,0],
+  TEN:[0,3,0],BAL:[2,1,0],JAX:[2,1,0],CIN:[2,1,0],MIA:[0,3,0],MIN:[3,0,0],
+  KC:[3,0,0],LV:[3,0,0],LAC:[0,3,0],SEA:[2,1,0],DEN:[2,1,0],SF:[3,0,0],
+  DET:[2,1,0],CAR:[1,2,0]
+};
+const fmtRec=r=>r[0]+"-"+r[1]+(r[2]?"-"+r[2]:"");
+// A team's record after a final: baseline plus this game's result
+function recAfter(team,winner,final){
+  const r=BASE[team].slice();
+  if(final){
+    if(winner===null)r[2]++;
+    else if(winner===team)r[0]++;
+    else r[1]++;
+  }
+  return r;
+}
+
 let live={games:{},updatedAt:null};
 
 const fmtTime=d=>d.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-function teamRow(gid,t,score,pct,cls){
+function teamRow(gid,t,score,pct,cls,record,isNew){
   const [name,c1,c2]=TEAMS[t];
   const right=score==null?`<span class="pct">${pct.toFixed(0)}%</span>`:`<span class="score" data-k="${gid}:${t}"><span class="n">${esc(score)}</span></span>`;
   return `<div class="row ${cls}"><span class="bar" aria-hidden="true"><i style="background:${c1}"></i><i style="background:${c2}"></i></span>
-    <span class="team"><span class="abbr">${t}</span><span class="name">${name}</span></span>${right}</div>`;
+    <span class="team"><span class="abbr">${t}</span><span class="meta"><span class="name">${name}</span><span class="rec${isNew?" new":""}">${record}</span></span></span>${right}</div>`;
 }
 
 function render(){
@@ -190,11 +216,12 @@ function render(){
     for(const g of list){
       const s=live.games&&live.games[g.id];
       const status=s&&s.status;
-      let awayCls="",homeCls="",state="",cardCls="",verdict="";
+      let awayCls="",homeCls="",state="",cardCls="",verdict="",isFinal=false,winnerTeam=null;
       let as=null,hs=null;
       if(status==="live"||status==="final"){as=s.away??0;hs=s.home??0}
       if(status==="final"){
         const winner=as>hs?g.away:hs>as?g.home:null;
+        isFinal=true;winnerTeam=winner;
         if(winner){
           awayCls=winner===g.away?"win":"lose";
           homeCls=winner===g.home?"win":"lose";
@@ -217,7 +244,7 @@ function render(){
       }
       const pickPct=g.pick===g.away?g.ap:g.hp;
       html+=`<article class="game ${cardCls}" data-g="${g.id}" aria-label="${TEAMS[g.away][0]} at ${TEAMS[g.home][0]}">
-        ${teamRow(g.id,g.away,as,g.ap,awayCls)}${teamRow(g.id,g.home,hs,g.hp,homeCls)}
+        ${teamRow(g.id,g.away,as,g.ap,awayCls,fmtRec(recAfter(g.away,winnerTeam,isFinal)),isFinal)}${teamRow(g.id,g.home,hs,g.hp,homeCls,fmtRec(recAfter(g.home,winnerTeam,isFinal)),isFinal)}
         <div class="foot"><span class="pick">Pick <strong>${g.pick}</strong> ${pickPct.toFixed(1)}%${verdict}</span>${state}</div>
       </article>`;
     }
