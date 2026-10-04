@@ -114,6 +114,15 @@ footer{margin-top:36px;color:var(--dim);font-size:13px;max-width:62ch}
 .rec{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums}
 .rec.new{color:var(--muted)}
 .row.lose .rec{color:var(--dim)}
+
+/* possession */
+.ball{display:inline-block;width:22px;height:13px;margin-left:8px;vertical-align:middle;transform:translateY(-3px);flex:none}
+.ball.fresh{animation:ballin .5s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes ballin{0%{transform:translateY(-3px) scale(0) rotate(-40deg)}100%{transform:translateY(-3px) scale(1) rotate(0)}}
+.row.poss{background:linear-gradient(90deg,rgba(255,255,255,.045),transparent 70%)}
+.sit{display:flex;align-items:center;gap:8px;padding:8px 16px;border-top:1px solid var(--line);font-size:14px;color:var(--text);font-variant-numeric:tabular-nums}
+.sit .rz{font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--miss);background:rgba(232,106,112,.15);padding:2px 7px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){.ball.fresh{animation:none}}
 </style>
 </head>
 <body>
@@ -187,15 +196,16 @@ function recAfter(team,winner,final){
 }
 
 let live={games:{},updatedAt:null};
+let prevPoss={};   // who had the ball at the last redraw, so the football only animates when it changes hands
 
 const fmtTime=d=>d.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-function teamRow(gid,t,score,pct,cls,record,isNew){
+function teamRow(gid,t,score,pct,cls,record,isNew,hasBall,fresh){
   const [name,c1,c2]=TEAMS[t];
   const right=score==null?`<span class="pct">${pct.toFixed(0)}%</span>`:`<span class="score" data-k="${gid}:${t}"><span class="n">${esc(score)}</span></span>`;
-  return `<div class="row ${cls}"><span class="bar" aria-hidden="true"><i style="background:${c1}"></i><i style="background:${c2}"></i></span>
-    <span class="team"><span class="abbr">${t}</span><span class="meta"><span class="name">${name}</span><span class="rec${isNew?" new":""}">${record}</span></span></span>${right}</div>`;
+  return `<div class="row ${cls}${hasBall?" poss":""}"><span class="bar" aria-hidden="true"><i style="background:${c1}"></i><i style="background:${c2}"></i></span>
+    <span class="team"><span class="abbr">${t}</span>${hasBall?`<svg class="ball${fresh?" fresh":""}" viewBox="0 0 24 14" role="img" aria-label="Has the ball"><ellipse cx="12" cy="7" rx="11" ry="6.2" fill="#8B4A23"/><path d="M3.5 4.2q8.5-2.6 17 0M3.5 9.8q8.5 2.6 17 0" stroke="#5E2F14" stroke-width=".8" fill="none"/><path d="M8.5 7h7M10 5.7v2.6M12 5.7v2.6M14 5.7v2.6" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg>`:""}<span class="meta"><span class="name">${name}</span><span class="rec${isNew?" new":""}">${record}</span></span></span>${right}</div>`;
 }
 
 function render(){
@@ -208,6 +218,7 @@ function render(){
     groups.get(k).push(g);
   }
   let html="";
+  const nextPoss={};
   for(const [k,list] of groups){
     const d=new Date(k);
     const label=fmtTime(d);
@@ -216,7 +227,7 @@ function render(){
     for(const g of list){
       const s=live.games&&live.games[g.id];
       const status=s&&s.status;
-      let awayCls="",homeCls="",state="",cardCls="",verdict="",isFinal=false,winnerTeam=null;
+      let awayCls="",homeCls="",state="",cardCls="",verdict="",isFinal=false,winnerTeam=null,poss=null,sit="";
       let as=null,hs=null;
       if(status==="live"||status==="final"){as=s.away??0;hs=s.home??0}
       if(status==="final"){
@@ -236,6 +247,11 @@ function render(){
         const q=s.quarter?(s.quarter>4?"OT":"Q"+s.quarter):"";
         const parts=[q,s.clock].filter(Boolean).join(" ");
         state=`<span class="state live">${esc(s.half?"Halftime":(parts||"Live"))}</span>`;
+        if(!s.half&&(s.poss==="home"||s.poss==="away")){
+          poss=s.poss;
+          const who=poss==="home"?g.home:g.away;
+          sit=`<div class="sit">${esc(who)} ball${s.down?", "+esc(s.down):""}${s.rz?'<span class="rz">Red zone</span>':""}</div>`;
+        }
       }else if(now>=g.kick){
         anyLive=true;
         state='<span class="state wait">Kicked off, waiting for score</span>';
@@ -243,14 +259,17 @@ function render(){
         state=`<span class="state">${fmtTime(g.kick)}</span>`;
       }
       const pickPct=g.pick===g.away?g.ap:g.hp;
+      nextPoss[g.id]=poss;
       html+=`<article class="game ${cardCls}" data-g="${g.id}" aria-label="${TEAMS[g.away][0]} at ${TEAMS[g.home][0]}">
-        ${teamRow(g.id,g.away,as,g.ap,awayCls,fmtRec(recAfter(g.away,winnerTeam,isFinal)),isFinal)}${teamRow(g.id,g.home,hs,g.hp,homeCls,fmtRec(recAfter(g.home,winnerTeam,isFinal)),isFinal)}
+        ${teamRow(g.id,g.away,as,g.ap,awayCls,fmtRec(recAfter(g.away,winnerTeam,isFinal)),isFinal,poss==="away",poss==="away"&&prevPoss[g.id]!=="away")}${teamRow(g.id,g.home,hs,g.hp,homeCls,fmtRec(recAfter(g.home,winnerTeam,isFinal)),isFinal,poss==="home",poss==="home"&&prevPoss[g.id]!=="home")}
+        ${sit}
         <div class="foot"><span class="pick">Pick <strong>${g.pick}</strong> ${pickPct.toFixed(1)}%${verdict}</span>${state}</div>
       </article>`;
     }
     html+="</div>";
   }
   document.getElementById("board").innerHTML=html;
+  prevPoss=nextPoss;
   animateScores();
   document.getElementById("hits").textContent=hits;
   document.getElementById("misses").textContent=misses;
@@ -334,12 +353,19 @@ async function poll(){
       const st=ev.status||c.status||{},t=st.type||{};
       const id=ab(a.team.abbreviation)+"-"+ab(h.team.abbreviation);
       if(t.state==="pre")continue;
+      const sit=c.situation||{};
+      const tid=x=>String((x.team&&x.team.id)||x.id);
+      const pid=sit.possession!=null?String(sit.possession):null;
+      const poss=t.state==="in"&&pid?(pid===tid(h)?"home":pid===tid(a)?"away":null):null;
       games[id]={
         status:t.state==="post"?"final":"live",
         away:Number(a.score)||0,home:Number(h.score)||0,
         quarter:st.period,clock:st.displayClock,
         half:/half/i.test(t.shortDetail||t.detail||""),
-        ot:t.state==="post"&&st.period>4
+        ot:t.state==="post"&&st.period>4,
+        poss,
+        down:poss?(sit.shortDownDistanceText||sit.downDistanceText||""):"",
+        rz:!!(poss&&sit.isRedZone)
       };
     }
     live={games,updatedAt:new Date().toISOString()};
@@ -354,7 +380,7 @@ async function poll(){
 if(/[?&]demo\b/.test(location.search)){
   const pts=[7,3,6,7,3,2,1,7,3];
   const g0={};
-  GAMES.slice(0,6).forEach(g=>g0[g.id]={status:"live",away:0,home:0,quarter:1,clock:"15:00"});
+  GAMES.slice(0,6).forEach((g,i)=>g0[g.id]={status:"live",away:0,home:0,quarter:1,clock:"15:00",poss:i%2?"home":"away",down:"1st & 10 at "+(i%2?g.home:g.away)+" 25",rz:false});
   live={games:g0,updatedAt:new Date().toISOString()};
   render();
   document.getElementById("updated").innerHTML='<span class="demo-tag">Demo mode</span>, fake scores every 3 seconds';
@@ -364,6 +390,16 @@ if(/[?&]demo\b/.test(location.search)){
     const side=Math.random()<.5?"away":"home";
     const copy=JSON.parse(JSON.stringify(live.games));
     copy[id][side]+=pts[Math.floor(Math.random()*pts.length)];
+    // after a score the other team gets the ball; elsewhere, random drive situations
+    copy[id].poss=side==="home"?"away":"home";
+    for(const k of ids){
+      const gm=GAMES.find(x=>x.id===k), d=copy[k];
+      if(k!==id&&Math.random()<.35) d.poss=d.poss==="home"?"away":"home";
+      const yl=Math.floor(Math.random()*49)+1, own=Math.random()<.5;
+      const off=d.poss==="home"?gm.home:gm.away, def=d.poss==="home"?gm.away:gm.home;
+      d.down=["1st","2nd","3rd","4th"][Math.floor(Math.random()*4)]+" & "+(Math.floor(Math.random()*10)+1)+" at "+(own?off:def)+" "+yl;
+      d.rz=!own&&yl<=20;
+    }
     live={games:copy,updatedAt:new Date().toISOString()};
     render();
     document.getElementById("updated").innerHTML='<span class="demo-tag">Demo mode</span>, fake scores every 3 seconds';
