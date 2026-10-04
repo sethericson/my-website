@@ -125,6 +125,16 @@ footer{margin-top:36px;color:var(--dim);font-size:13px;max-width:62ch}
 .sit strong{font-weight:600;color:var(--amber)}
 .sit .rz{font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--miss);background:rgba(232,106,112,.15);padding:2px 7px;border-radius:4px}
 @media (prefers-reduced-motion:reduce){.ball.fresh{animation:none}}
+
+/* collapsible kickoff windows */
+.sec-toggle{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:10px;font:inherit;color:inherit;border-radius:6px;-webkit-tap-highlight-color:transparent}
+.sec-toggle:focus-visible{outline:2px solid var(--amber);outline-offset:4px}
+.tri{width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:11px solid var(--text);transform:rotate(90deg);transition:transform .2s ease;flex:none}
+.sec.collapsed .tri{transform:rotate(0deg)}
+.sec.collapsed .grid{display:none}
+.sec .hidden-note{display:none;font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted)}
+.sec.collapsed .hidden-note{display:inline}
+@media (prefers-reduced-motion:reduce){.tri{transition:none}}
 </style>
 </head>
 <body>
@@ -198,7 +208,18 @@ function recAfter(team,winner,final){
 }
 
 let live={games:{},updatedAt:null};
-let prevPoss={};   // who had the ball at the last redraw, so the football only animates when it changes hands
+let prevPoss={};
+// kickoff windows the viewer has collapsed; kept in this browser so it survives refreshes and reloads
+let collapsed=new Set();
+try{collapsed=new Set(JSON.parse(localStorage.getItem("sb-collapsed")||"[]"))}catch(e){}
+document.addEventListener("click",e=>{
+  const btn=e.target.closest(".sec-toggle"); if(!btn)return;
+  const sec=btn.closest(".sec"), k=sec.dataset.k;
+  const shut=!sec.classList.contains("collapsed");
+  sec.classList.toggle("collapsed",shut); btn.setAttribute("aria-expanded",String(!shut));
+  shut?collapsed.add(k):collapsed.delete(k);
+  try{localStorage.setItem("sb-collapsed",JSON.stringify([...collapsed]))}catch(e){}
+});   // who had the ball at the last redraw, so the football only animates when it changes hands
 
 const fmtTime=d=>d.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -225,7 +246,8 @@ function render(){
     const d=new Date(k);
     const label=fmtTime(d);
     const isSNF=d.getUTCHours()===0;
-    html+=`<h2>${label}${isSNF?" <small>Sunday Night Football</small>":""}</h2><div class="grid">`;
+    const shut=collapsed.has(String(k));
+    html+=`<section class="sec${shut?" collapsed":""}" data-k="${k}"><h2><button type="button" class="sec-toggle" aria-expanded="${!shut}">${label}<span class="tri" aria-hidden="true"></span></button>${isSNF?" <small>Sunday Night Football</small>":""}<span class="hidden-note">${list.length} game${list.length>1?"s":""} hidden</span></h2><div class="grid">`;
     for(const g of list){
       const s=live.games&&live.games[g.id];
       const status=s&&s.status;
@@ -268,7 +290,7 @@ function render(){
         <div class="foot"><span class="pick">Pick <strong>${g.pick}</strong> ${pickPct.toFixed(1)}%${verdict}</span>${state}</div>
       </article>`;
     }
-    html+="</div>";
+    html+="</div></section>";
   }
   document.getElementById("board").innerHTML=html;
   prevPoss=nextPoss;
