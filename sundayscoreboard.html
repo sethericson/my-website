@@ -116,9 +116,10 @@ footer{margin-top:36px;color:var(--dim);font-size:13px;max-width:62ch}
 .row.lose .rec{color:var(--dim)}
 
 /* possession */
-.ball{display:inline-block;width:22px;height:13px;margin-left:8px;vertical-align:middle;transform:translateY(-3px);flex:none}
+.meta{position:relative}
+.ball{position:absolute;left:calc(100% + 8px);top:2px;width:22px;height:13px}
 .ball.fresh{animation:ballin .5s cubic-bezier(.2,.9,.3,1.4)}
-@keyframes ballin{0%{transform:translateY(-3px) scale(0) rotate(-40deg)}100%{transform:translateY(-3px) scale(1) rotate(0)}}
+@keyframes ballin{0%{transform:scale(0) rotate(-40deg)}100%{transform:scale(1) rotate(0)}}
 .row.poss{background:linear-gradient(90deg,rgba(255,255,255,.045),transparent 70%)}
 .sit{display:flex;align-items:center;gap:8px;padding:8px 16px;border-top:1px solid var(--line);font-size:14px;color:var(--text);font-variant-numeric:tabular-nums}
 .sit .rz{font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--miss);background:rgba(232,106,112,.15);padding:2px 7px;border-radius:4px}
@@ -205,7 +206,7 @@ function teamRow(gid,t,score,pct,cls,record,isNew,hasBall,fresh){
   const [name,c1,c2]=TEAMS[t];
   const right=score==null?`<span class="pct">${pct.toFixed(0)}%</span>`:`<span class="score" data-k="${gid}:${t}"><span class="n">${esc(score)}</span></span>`;
   return `<div class="row ${cls}${hasBall?" poss":""}"><span class="bar" aria-hidden="true"><i style="background:${c1}"></i><i style="background:${c2}"></i></span>
-    <span class="team"><span class="abbr">${t}</span>${hasBall?`<svg class="ball${fresh?" fresh":""}" viewBox="0 0 24 14" role="img" aria-label="Has the ball"><ellipse cx="12" cy="7" rx="11" ry="6.2" fill="#8B4A23"/><path d="M3.5 4.2q8.5-2.6 17 0M3.5 9.8q8.5 2.6 17 0" stroke="#5E2F14" stroke-width=".8" fill="none"/><path d="M8.5 7h7M10 5.7v2.6M12 5.7v2.6M14 5.7v2.6" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg>`:""}<span class="meta"><span class="name">${name}</span><span class="rec${isNew?" new":""}">${record}</span></span></span>${right}</div>`;
+    <span class="team"><span class="abbr">${t}</span><span class="meta"><span class="name">${name}</span><span class="rec${isNew?" new":""}">${record}</span>${hasBall?`<svg class="ball${fresh?" fresh":""}" viewBox="0 0 24 14" role="img" aria-label="Has the ball"><ellipse cx="12" cy="7" rx="11" ry="6.2" fill="#8B4A23"/><path d="M3.5 4.2q8.5-2.6 17 0M3.5 9.8q8.5 2.6 17 0" stroke="#5E2F14" stroke-width=".8" fill="none"/><path d="M8.5 7h7M10 5.7v2.6M12 5.7v2.6M14 5.7v2.6" stroke="#fff" stroke-width="1.1" stroke-linecap="round"/></svg>`:""}</span></span>${right}</div>`;
 }
 
 function render(){
