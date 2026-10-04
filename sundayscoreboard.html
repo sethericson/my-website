@@ -122,6 +122,7 @@ footer{margin-top:36px;color:var(--dim);font-size:13px;max-width:62ch}
 @keyframes ballin{0%{transform:scale(0) rotate(-40deg)}100%{transform:scale(1) rotate(0)}}
 .row.poss{background:linear-gradient(90deg,rgba(255,255,255,.045),transparent 70%)}
 .sit{display:flex;align-items:center;gap:8px;padding:8px 16px;border-top:1px solid var(--line);font-size:14px;color:var(--text);font-variant-numeric:tabular-nums}
+.sit strong{font-weight:600;color:var(--amber)}
 .sit .rz{font-weight:600;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--miss);background:rgba(232,106,112,.15);padding:2px 7px;border-radius:4px}
 @media (prefers-reduced-motion:reduce){.ball.fresh{animation:none}}
 </style>
@@ -140,7 +141,7 @@ footer{margin-top:36px;color:var(--dim);font-size:13px;max-width:62ch}
   </header>
   <div class="status-line"><span class="pulse" id="pulse"></span><span id="updated">Loading live scores</span></div>
   <main id="board"></main>
-  <footer>Live scores from ESPN refresh every 60 seconds. Percentages are each team's win rate across 10,000 simulated games.</footer>
+  <footer>Live scores from ESPN refresh every 15 seconds while games are on. Percentages are each team's win rate across 10,000 simulated games.</footer>
 </div>
 
 <script>
@@ -251,7 +252,7 @@ function render(){
         if(!s.half&&(s.poss==="home"||s.poss==="away")){
           poss=s.poss;
           const who=poss==="home"?g.home:g.away;
-          sit=`<div class="sit">${esc(who)} ball${s.down?", "+esc(s.down):""}${s.rz?'<span class="rz">Red zone</span>':""}</div>`;
+          sit=`<div class="sit"><span>${esc(who)} ball${s.spot?` on <strong>${esc(s.spot)}</strong>`:""}${s.down?", "+esc(s.down):""}</span>${s.rz?'<span class="rz">Red zone</span>':""}</div>`;
         }
       }else if(now>=g.kick){
         anyLive=true;
@@ -275,13 +276,6 @@ function render(){
   document.getElementById("hits").textContent=hits;
   document.getElementById("misses").textContent=misses;
   document.getElementById("pulse").classList.toggle("on",anyLive);
-  const u=document.getElementById("updated");
-  if(live.updatedAt){
-    const mins=Math.max(0,Math.round((now-new Date(live.updatedAt))/60000));
-    u.textContent=mins<1?"Scores updated just now":`Scores updated ${mins} min ago`;
-  }else if(!u.dataset.offline){
-    u.textContent="Waiting for the first score update";
-  }
 }
 
 // ---- scoring animation ----
@@ -341,9 +335,8 @@ const ESPN="https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboar
 const FIX={WSH:"WAS",LA:"LAR",JAC:"JAX"};
 const ab=a=>FIX[a]||a;
 async function poll(){
-  const u=document.getElementById("updated");
   try{
-    const r=await fetch(ESPN+"?dates=20261004&_="+Date.now(),{cache:"no-store"});
+    const r=await fetch(ESPN+"?dates=20261004");
     if(!r.ok)throw new Error("HTTP "+r.status);
     const j=await r.json();
     const games={};
@@ -365,23 +358,60 @@ async function poll(){
         half:/half/i.test(t.shortDetail||t.detail||""),
         ot:t.state==="post"&&st.period>4,
         poss,
-        down:poss?(sit.shortDownDistanceText||sit.downDistanceText||""):"",
+        down:poss?(sit.shortDownDistanceText||(sit.downDistanceText||"").replace(/\s+at\s+.*$/,"")):"",
+        spot:poss?(sit.possessionText||((sit.downDistanceText||"").match(/\bat\s+(.+)$/)||[])[1]||""):"",
         rz:!!(poss&&sit.isRedZone)
       };
     }
     live={games,updatedAt:new Date().toISOString()};
-    delete u.dataset.offline;
+    render();
+    return true;
   }catch(e){
-    u.dataset.offline="1";
-    u.textContent="Couldn't reach the score feed. Trying again in 60 seconds.";
+    render();
+    return false;
   }
-  render();
+}
+
+// ---- refresh controller: 15-second countdown, pauses when hidden or when no games are live ----
+const POLL_S=15;
+let timer=null,nextAt=0,fetching=false,failed=false;
+const statusEl=()=>document.getElementById("updated");
+const isLive=g=>{const s=live.games[g.id];return g.kick.getTime()<=Date.now()+30000&&!(s&&s.status==="final")};
+const needPolling=()=>GAMES.some(isLive);
+function nextKick(){
+  const up=GAMES.filter(g=>g.kick.getTime()>Date.now()).map(g=>g.kick.getTime());
+  return up.length?Math.min(...up):0;
+}
+function showStatus(){
+  const el=statusEl();
+  if(document.hidden){el.textContent="Paused while this tab is in the background";return}
+  if(fetching){el.textContent="Getting new scores…";return}
+  const secs=Math.max(0,Math.ceil((nextAt-Date.now())/1000));
+  if(failed)el.textContent=`Couldn't reach the score feed. Retrying in ${secs}`;
+  else if(needPolling())el.textContent=`Updating in ${secs}`;
+  else if(nextAt)el.textContent=`No games live right now. Next check at kickoff, ${fmtTime(new Date(nextAt))}`;
+  else el.textContent="All games final";
+}
+function schedule(){
+  clearTimeout(timer);
+  if(document.hidden){showStatus();return}
+  if(failed||needPolling()){nextAt=Date.now()+POLL_S*1000;timer=setTimeout(cycle,POLL_S*1000)}
+  else{nextAt=nextKick();if(nextAt)timer=setTimeout(cycle,nextAt-Date.now())}
+  showStatus();
+}
+async function cycle(){
+  clearTimeout(timer);
+  if(document.hidden){showStatus();return}
+  fetching=true;showStatus();
+  failed=!(await poll());
+  fetching=false;
+  schedule();
 }
 
 if(/[?&]demo\b/.test(location.search)){
   const pts=[7,3,6,7,3,2,1,7,3];
   const g0={};
-  GAMES.slice(0,6).forEach((g,i)=>g0[g.id]={status:"live",away:0,home:0,quarter:1,clock:"15:00",poss:i%2?"home":"away",down:"1st & 10 at "+(i%2?g.home:g.away)+" 25",rz:false});
+  GAMES.slice(0,6).forEach((g,i)=>g0[g.id]={status:"live",away:0,home:0,quarter:1,clock:"15:00",poss:i%2?"home":"away",down:"1st & 10",spot:(i%2?g.home:g.away)+" 25",rz:false});
   live={games:g0,updatedAt:new Date().toISOString()};
   render();
   document.getElementById("updated").innerHTML='<span class="demo-tag">Demo mode</span>, fake scores every 3 seconds';
@@ -398,7 +428,8 @@ if(/[?&]demo\b/.test(location.search)){
       if(k!==id&&Math.random()<.35) d.poss=d.poss==="home"?"away":"home";
       const yl=Math.floor(Math.random()*49)+1, own=Math.random()<.5;
       const off=d.poss==="home"?gm.home:gm.away, def=d.poss==="home"?gm.away:gm.home;
-      d.down=["1st","2nd","3rd","4th"][Math.floor(Math.random()*4)]+" & "+(Math.floor(Math.random()*10)+1)+" at "+(own?off:def)+" "+yl;
+      d.down=["1st","2nd","3rd","4th"][Math.floor(Math.random()*4)]+" & "+(Math.floor(Math.random()*10)+1);
+      d.spot=(own?off:def)+" "+yl;
       d.rz=!own&&yl<=20;
     }
     live={games:copy,updatedAt:new Date().toISOString()};
@@ -406,8 +437,9 @@ if(/[?&]demo\b/.test(location.search)){
     document.getElementById("updated").innerHTML='<span class="demo-tag">Demo mode</span>, fake scores every 3 seconds';
   },3000);
 }else{
-  poll();
-  setInterval(poll,60000);
+  cycle();
+  setInterval(()=>{if(!fetching)showStatus()},1000);
+  document.addEventListener("visibilitychange",()=>{if(document.hidden){clearTimeout(timer);showStatus()}else cycle()});
 }
 </script>
 </body>
