@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Week 4 Sunday Scoreboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E1520;
+  --panel:#151F2C;
+  --panel-2:#1B2735;
+  --line:#253344;
+  --text:#E9EEF3;
+  --muted:#8796A8;
+  --dim:#5A6878;
+  --amber:#F4B740;
+  --hit:#4CC38A;
+  --miss:#E86A70;
+  --cond:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.4;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 16px 48px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:8px}
+h1{font-family:var(--cond);font-weight:700;font-size:clamp(40px,9vw,64px);line-height:.9;letter-spacing:-.01em;margin:0}
+.sub{color:var(--muted);margin:8px 0 0;font-size:15px}
+.tally{display:flex;gap:20px}
+.tally div{text-align:right}
+.tally b{display:block;font-family:var(--cond);font-weight:700;font-size:34px;line-height:1}
+.tally span{color:var(--muted);font-size:13px}
+.tally .h b{color:var(--hit)}
+.tally .m b{color:var(--miss)}
+
+.status-line{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin:14px 0 4px}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--dim)}
+.pulse.on{background:var(--amber);box-shadow:0 0 0 0 rgba(244,183,64,.6);animation:p 2s infinite}
+@keyframes p{70%{box-shadow:0 0 0 8px rgba(244,183,64,0)}100%{box-shadow:0 0 0 0 rgba(244,183,64,0)}}
+
+h2{font-family:var(--cond);font-weight:600;font-size:22px;margin:30px 0 12px;color:var(--text);display:flex;align-items:baseline;gap:10px}
+h2 small{font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+
+.game{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.game.live{border-color:rgba(244,183,64,.45)}
+.row{display:grid;grid-template-columns:6px 1fr auto;align-items:center;gap:0 14px;padding:12px 16px 12px 0;min-height:60px}
+.row+.row{border-top:1px solid var(--line)}
+.bar{align-self:stretch;display:flex;flex-direction:column}
+.bar i{display:block}
+.bar i:first-child{flex:7}
+.bar i:last-child{flex:3}
+.team{display:flex;align-items:baseline;gap:10px;min-width:0}
+.abbr{font-family:var(--cond);font-weight:700;font-size:30px;line-height:1;letter-spacing:.01em;min-width:58px}
+.name{color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.score{font-family:var(--cond);font-weight:700;font-size:38px;line-height:1;font-variant-numeric:tabular-nums;min-width:2ch;text-align:right}
+.pct{font-family:var(--cond);font-weight:500;font-size:20px;color:var(--muted);font-variant-numeric:tabular-nums}
+.row.lose .abbr,.row.lose .score{color:var(--dim)}
+.row.lose .name{color:var(--dim)}
+.row.win .abbr::after{content:"";display:inline-block;width:0;height:0;border-left:7px solid var(--text);border-top:5px solid transparent;border-bottom:5px solid transparent;margin-left:8px;vertical-align:middle;transform:translateY(-3px)}
+
+.foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 16px;background:var(--panel-2);font-size:14px}
+.pick{color:var(--muted)}
+.pick strong{color:var(--text);font-weight:600}
+.state{font-family:var(--cond);font-weight:600;font-size:17px;letter-spacing:.02em;white-space:nowrap}
+.state.live{color:var(--amber)}
+.state.final{color:var(--text)}
+.state.wait{color:var(--muted);font-family:var(--body);font-weight:500;font-size:13px;letter-spacing:0}
+.verdict{font-weight:600;padding:2px 8px;border-radius:4px;font-size:13px;margin-left:8px}
+.verdict.hit{background:rgba(76,195,138,.15);color:var(--hit)}
+.verdict.miss{background:rgba(232,106,112,.15);color:var(--miss)}
+
+footer{margin-top:36px;color:var(--dim);font-size:13px;max-width:62ch}
+@media (prefers-reduced-motion:reduce){.pulse.on{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Sunday Scoreboard</h1>
+      <p class="sub">NFL Week 4, October 4. Picks from 10,000 simulations per game.</p>
+    </div>
+    <div class="tally" aria-label="Pick record">
+      <div class="h"><b id="hits">0</b><span>Picks hit</span></div>
+      <div class="m"><b id="misses">0</b><span>Missed</span></div>
+    </div>
+  </header>
+  <div class="status-line"><span class="pulse" id="pulse"></span><span id="updated">Loading live scores</span></div>
+  <main id="board"></main>
+  <footer>Live scores from ESPN refresh every 60 seconds. Percentages are each team's win rate across 10,000 simulated games.</footer>
+</div>
+
+<script>
+const TEAMS={
+  ARI:["Cardinals","#97233F","#FFB612"],NYG:["Giants","#0B2265","#A71930"],
+  NE:["Patriots","#002244","#C60C30"],BUF:["Bills","#00338D","#C60C30"],
+  NYJ:["Jets","#125740","#FFFFFF"],CHI:["Bears","#0B162A","#C83803"],
+  DAL:["Cowboys","#003594","#869397"],HOU:["Texans","#03202F","#A71930"],
+  LAR:["Rams","#003594","#FFA300"],PHI:["Eagles","#004C54","#A5ACAF"],
+  GB:["Packers","#203731","#FFB612"],TB:["Buccaneers","#D50A0A","#B1BABF"],
+  TEN:["Titans","#0C2340","#4B92DB"],BAL:["Ravens","#241773","#9E7C0C"],
+  JAX:["Jaguars","#006778","#D7A22A"],CIN:["Bengals","#FB4F14","#1A1A1A"],
+  MIA:["Dolphins","#008E97","#FC4C02"],MIN:["Vikings","#4F2683","#FFC62F"],
+  KC:["Chiefs","#E31837","#FFB81C"],LV:["Raiders","#A5ACAF","#2A2A2A"],
+  LAC:["Chargers","#0080C6","#FFC20E"],SEA:["Seahawks","#002244","#69BE28"],
+  DEN:["Broncos","#FB4F14","#002244"],SF:["49ers","#AA0000","#B3995D"],
+  DET:["Lions","#0076B6","#B0B7BC"],CAR:["Panthers","#0085CA","#101820"]
+};
+// [away, home, kickoff UTC, away win %, home win %, pick]
+const GAMES=[
+  ["ARI","NYG","2026-10-04T17:00:00Z",56.4,43.3,"ARI"],
+  ["NE","BUF","2026-10-04T17:00:00Z",29.1,70.7,"BUF"],
+  ["NYJ","CHI","2026-10-04T17:00:00Z",40.2,59.5,"CHI"],
+  ["DAL","HOU","2026-10-04T17:00:00Z",41.9,57.9,"HOU"],
+  ["LAR","PHI","2026-10-04T17:00:00Z",58.6,41.1,"LAR"],
+  ["GB","TB","2026-10-04T17:00:00Z",62.8,36.9,"GB"],
+  ["TEN","BAL","2026-10-04T17:00:00Z",19.4,80.4,"BAL"],
+  ["JAX","CIN","2026-10-04T17:00:00Z",43.2,56.5,"CIN"],
+  ["MIA","MIN","2026-10-04T20:05:00Z",21.6,78.1,"MIN"],
+  ["KC","LV","2026-10-04T20:25:00Z",62.2,37.5,"KC"],
+  ["LAC","SEA","2026-10-04T20:25:00Z",30.7,69.0,"SEA"],
+  ["DEN","SF","2026-10-04T20:25:00Z",41.9,57.7,"SF"],
+  ["DET","CAR","2026-10-05T00:20:00Z",60.4,39.4,"DET"]
+].map(g=>({away:g[0],home:g[1],kick:new Date(g[2]),ap:g[3],hp:g[4],pick:g[5],id:g[0]+"-"+g[1]}));
+
+let live={games:{},updatedAt:null};
+
+const fmtTime=d=>d.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function teamRow(t,score,pct,cls){
+  const [name,c1,c2]=TEAMS[t];
+  const right=score==null?`<span class="pct">${pct.toFixed(0)}%</span>`:`<span class="score">${esc(score)}</span>`;
+  return `<div class="row ${cls}"><span class="bar" aria-hidden="true"><i style="background:${c1}"></i><i style="background:${c2}"></i></span>
+    <span class="team"><span class="abbr">${t}</span><span class="name">${name}</span></span>${right}</div>`;
+}
+
+function render(){
+  const now=new Date();
+  let hits=0,misses=0,anyLive=false;
+  const groups=new Map();
+  for(const g of GAMES){
+    const k=g.kick.getTime();
+    if(!groups.has(k))groups.set(k,[]);
+    groups.get(k).push(g);
+  }
+  let html="";
+  for(const [k,list] of groups){
+    const d=new Date(k);
+    const label=fmtTime(d);
+    const isSNF=d.getUTCHours()===0;
+    html+=`<h2>${label}${isSNF?" <small>Sunday Night Football</small>":""}</h2><div class="grid">`;
+    for(const g of list){
+      const s=live.games&&live.games[g.id];
+      const status=s&&s.status;
+      let awayCls="",homeCls="",state="",cardCls="",verdict="";
+      let as=null,hs=null;
+      if(status==="live"||status==="final"){as=s.away??0;hs=s.home??0}
+      if(status==="final"){
+        const winner=as>hs?g.away:hs>as?g.home:null;
+        if(winner){
+          awayCls=winner===g.away?"win":"lose";
+          homeCls=winner===g.home?"win":"lose";
+          if(winner===g.pick){hits++;verdict='<span class="verdict hit">Hit</span>'}
+          else{misses++;verdict='<span class="verdict miss">Missed</span>'}
+          state=`<span class="state final">Final${s.ot?" / OT":""}</span>`;
+        }else{
+          state='<span class="state final">Final, tie</span>';
+        }
+      }else if(status==="live"){
+        anyLive=true;cardCls="live";
+        const q=s.quarter?(s.quarter>4?"OT":"Q"+s.quarter):"";
+        const parts=[q,s.clock].filter(Boolean).join(" ");
+        state=`<span class="state live">${esc(s.half?"Halftime":(parts||"Live"))}</span>`;
+      }else if(now>=g.kick){
+        anyLive=true;
+        state='<span class="state wait">Kicked off, waiting for score</span>';
+      }else{
+        state=`<span class="state">${fmtTime(g.kick)}</span>`;
+      }
+      const pickPct=g.pick===g.away?g.ap:g.hp;
+      html+=`<article class="game ${cardCls}" aria-label="${TEAMS[g.away][0]} at ${TEAMS[g.home][0]}">
+        ${teamRow(g.away,as,g.ap,awayCls)}${teamRow(g.home,hs,g.hp,homeCls)}
+        <div class="foot"><span class="pick">Pick <strong>${g.pick}</strong> ${pickPct.toFixed(1)}%${verdict}</span>${state}</div>
+      </article>`;
+    }
+    html+="</div>";
+  }
+  document.getElementById("board").innerHTML=html;
+  document.getElementById("hits").textContent=hits;
+  document.getElementById("misses").textContent=misses;
+  document.getElementById("pulse").classList.toggle("on",anyLive);
+  const u=document.getElementById("updated");
+  if(live.updatedAt){
+    const mins=Math.max(0,Math.round((now-new Date(live.updatedAt))/60000));
+    u.textContent=mins<1?"Scores updated just now":`Scores updated ${mins} min ago`;
+  }else if(!u.dataset.offline){
+    u.textContent="Waiting for the first score update";
+  }
+}
+
+render();
+
+const ESPN="https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard";
+const FIX={WSH:"WAS",LA:"LAR",JAC:"JAX"};
+const ab=a=>FIX[a]||a;
+async function poll(){
+  const u=document.getElementById("updated");
+  try{
+    const r=await fetch(ESPN+"?dates=20261004&_="+Date.now(),{cache:"no-store"});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const j=await r.json();
+    const games={};
+    for(const ev of j.events||[]){
+      const c=ev.competitions&&ev.competitions[0];if(!c)continue;
+      const h=c.competitors.find(x=>x.homeAway==="home"),a=c.competitors.find(x=>x.homeAway==="away");
+      if(!h||!a)continue;
+      const st=ev.status||c.status||{},t=st.type||{};
+      const id=ab(a.team.abbreviation)+"-"+ab(h.team.abbreviation);
+      if(t.state==="pre")continue;
+      games[id]={
+        status:t.state==="post"?"final":"live",
+        away:Number(a.score)||0,home:Number(h.score)||0,
+        quarter:st.period,clock:st.displayClock,
+        half:/half/i.test(t.shortDetail||t.detail||""),
+        ot:t.state==="post"&&st.period>4
+      };
+    }
+    live={games,updatedAt:new Date().toISOString()};
+    delete u.dataset.offline;
+  }catch(e){
+    u.dataset.offline="1";
+    u.textContent="Couldn't reach the score feed. Trying again in 60 seconds.";
+  }
+  render();
+}
+poll();
+setInterval(poll,60000);
+</script>
+</body>
+</html>
